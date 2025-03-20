@@ -1,0 +1,41 @@
+{
+  "name": "shweet",
+  "version": "0.0.10",
+  "description": "CSS in TS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "util": "cp -r ../misc/util ./",
+    "dirs": "for dir in ./src ./dist ./test ./util ./types; do mkdir -p $dir; done",
+    "@": "ln -sf ../../misc/@/ ./src",
+    "ts": "ln -sf ../misc/tsconfig.json ./;",
+    "init": "bun run dirs && bun run util && bun run @ && bun run ts;",
+    "build": "rm -r ./types ; tsc && bun build ./src/index.ts --outdir ./dist --minify --packages external --target bun && rollup -c ./util/rollup.config.js"
+  },
+  "keywords": [
+    "css",
+    "ts"
+  ],
+  "author": "MARKjotep",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MARKjotep/sweetss.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MARKjotep/sweetss/issues"
+  },
+  "homepage": "https://github.com/MARKjotep/sweetss#readme",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/bun": "latest",
+    "rollup-plugin-dts": "^6.1.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

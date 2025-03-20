@@ -1,0 +1,1 @@
+export const go="go",hello="hello",kkgolarge="kkgolarge",kks="kks",lol="lol",n1="n1",nice="nice",okay="okay",xx="xx";
