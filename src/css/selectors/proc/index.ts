@@ -4,6 +4,7 @@ import {
   isArr,
   isClassOrId,
   isDefined,
+  isFN,
   isObj,
   isStr,
   log,
@@ -18,6 +19,9 @@ import { CSSinR, CSSValue } from "../../../types";
 import { _Var } from "../../../var";
 
 const valToMedia = (val: CSSValue | media): media => {
+  if (isFN(val)) {
+    return valToMedia(val());
+  }
   if (val instanceof media) return val;
   if (val instanceof _Var) return med(val.__(), {});
   return med(val, {});

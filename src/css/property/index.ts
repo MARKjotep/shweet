@@ -52,5 +52,6 @@ export const Property = (key: string, val: CSSValue, unit: string = "rem") => {
     delimeter: ARRcomma.has(key) ? ", " : " ",
     unit,
   });
+
   return `${reCamel(key)}: ${RV};`;
 };

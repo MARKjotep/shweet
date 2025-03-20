@@ -26,7 +26,7 @@ interface propCfg {
 
 type undefNull = CSSValue | undefined | null | undefNull[];
 export const Value = (
-  val: CSSValue | (() => any) | undefNull,
+  val: CSSValue | undefNull,
   cfg: propCfg = {
     unit: "rem",
   },
@@ -34,7 +34,7 @@ export const Value = (
   let { rem, second, quote, degree, percent, delimeter, unit, delimeter_arr } =
     cfg;
 
-  if (isUndefined(val) || isNull(val) || val === "") return "";
+  if (isUndefined(val) || isNull(val) || (!quote && val === "")) return "";
   const _val = isArr(val) ? val : [val];
   if (!_val.length) return "";
 
@@ -48,10 +48,6 @@ export const Value = (
 
       if (m instanceof _Var) {
         return m.__();
-      }
-
-      if (isFN(m)) {
-        return Value((m as any)(), cfg);
       }
 
       if (quote) {

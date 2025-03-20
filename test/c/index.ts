@@ -1,4 +1,4 @@
-import { Shweet, supports, ps, med, Var, log } from "../..";
+import { Shweet, supports, ps, med, Var, f, VarType } from "../../src";
 
 const { c, d, kf, font, save } = new Shweet({
   __filename,
