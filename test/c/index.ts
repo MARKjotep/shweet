@@ -1,7 +1,9 @@
-import { Shweet, supports, ps, med, Var, f, VarType } from "../../src";
+import { Shweet, supports, ps, med, Var } from "../../src";
+import BB from "../b";
 
 const { c, d, kf, font, save } = new Shweet({
   __filename,
+  Shweet: [BB],
   name: "i",
 });
 
@@ -111,5 +113,4 @@ save({
   dir: __dirname,
   mapDir: __dirname,
   mapName: "css",
-  minify: false,
 });

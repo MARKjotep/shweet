@@ -158,6 +158,7 @@ export class Proc {
         return this.process(name, k, v, props, data);
       });
     }
+    const dt = data.init(name, new Mapper());
     props.forEach((v, k) => {
       if (k === "supports") {
         data
@@ -165,7 +166,7 @@ export class Proc {
           .init(k, [])
           ?.push(...(v as any[]));
       } else {
-        data.init(name, new Mapper()).set(k as any, v as any);
+        dt.set(k as any, v as any);
       }
     });
   }

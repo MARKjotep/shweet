@@ -1,3 +1,3 @@
-# Sweet CSS
+# Shweet CSS
 
 CSS in TS

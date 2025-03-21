@@ -8,7 +8,7 @@ export class _Var {
   fallback?: CSSValue;
   var: string = "";
   value: media;
-  constructor(vr: obj<CSSValue | CSSValue[]> = {}, fallback?: CSSValue) {
+  constructor(vr: obj<CSSValue | media> = {}, fallback?: CSSValue) {
     if (oLen(vr)) {
       const [k, v] = oItems(vr)[0];
       this.k = k;
@@ -41,6 +41,6 @@ export class _Var {
   }
 }
 
-export const Var = (vr: obj<CSSValue>, fallback?: CSSValue) => {
+export const Var = (vr: obj<CSSValue | media>, fallback?: CSSValue) => {
   return new _Var(vr, fallback);
 };

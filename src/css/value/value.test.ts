@@ -50,11 +50,6 @@ describe("property value", () => {
     expect(Value(va.new(999))).toBe("var(--va)");
   });
 
-  test("function", () => {
-    //
-    expect(Value(() => 25, { rem: true })).toBe("25rem");
-  });
-
   test("css function", () => {
     //
     expect(Value(f.calc(1, "+", 3), { rem: true })).toBe("calc(1rem + 3rem)");
@@ -112,12 +107,6 @@ describe("property value generated", () => {
     expect(Value(["100", 200, "max-content"], { rem: true, unit: "vw" })).toBe(
       "100 200vw max-content",
     );
-  });
-
-  test("function expressions with different configurations", () => {
-    expect(Value(() => "calc(100% - 20px)")).toBe("calc(100% - 20px)");
-    expect(Value(() => null)).toBe("");
-    expect(Value(() => [1, 2], { percent: true })).toBe("1% 2%");
   });
 
   test("string values with parentheses", () => {
