@@ -1,7 +1,7 @@
 import { obj, oItems, oLen, reCamel } from "../@";
 import { Value } from "../css/value";
 import { med, media } from "../media";
-import { CSSValue } from "../types";
+import { CSSValue } from "../type";
 
 export class _Var {
   k: string = "";

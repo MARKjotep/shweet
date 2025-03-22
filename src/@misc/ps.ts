@@ -1,5 +1,5 @@
-import { CSSinR, CSSValue } from "../types";
-import { $$, isObj, isStr, oAss, obj, oItems, V } from "../@";
+import { CSSinR, CSSValue } from "../type";
+import { isObj, isStr, oAss, obj, oItems, V } from "../@";
 
 import { _Var } from "../var";
 import { med, media, Medyas } from "../media";

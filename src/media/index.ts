@@ -1,5 +1,5 @@
 import { log, ngify, oAss, obj, oItems, sparse } from "../@";
-import { CSSinR, CSSValue } from "../types";
+import { CSSinR, CSSValue } from "../type";
 
 export interface mtype {
   xs?: CSSValue;

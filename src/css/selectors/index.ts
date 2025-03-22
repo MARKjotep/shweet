@@ -2,7 +2,7 @@ import { isArr, isNumber, log, Mapper, obj, oItems } from "../../@";
 import { aFrom } from "../../@/arr";
 import { med, media, mtype } from "../../media";
 import { support, supports } from "../../support";
-import { atCSS, CSS, CSSinR, fontFace, KFCSS } from "../../types";
+import { atCSS, CSS, CSSinR, fontFace, KFCSS } from "../../type";
 import { Property } from "../property";
 import { Proc } from "./proc";
 

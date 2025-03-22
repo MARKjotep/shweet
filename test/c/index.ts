@@ -107,6 +107,15 @@ c.hello = [
   ps.child(".nice")({
     background: "purple",
   }),
+  ps.desc(".hellos")({
+    background: "orange",
+  }),
+  ps.next(".kk")({
+    fontSize: 2,
+  }),
+  ps.withClass(".naks")({
+    clear: 123,
+  }),
 ];
 
 save({

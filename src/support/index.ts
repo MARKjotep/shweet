@@ -1,5 +1,5 @@
 import { isStr, Mapper, oItems } from "../@";
-import { CSSinR } from "../types";
+import { CSSinR } from "../type";
 
 export class support {
   value: Mapper<string, CSSinR[]>;

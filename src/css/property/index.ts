@@ -1,5 +1,5 @@
 import { log, reCamel } from "../../@";
-import { CSSValue } from "../../types";
+import { CSSValue } from "../../type";
 import { _Var } from "../../var";
 import { Value } from "../value";
 

@@ -1,6 +1,6 @@
-import { $$, isArr, isNum, isNumber, isStr, reCamel } from "../@";
+import { isArr, isNum, isNumber, isStr, reCamel } from "../@";
 import { Value } from "../css/value";
-import { CSSValue } from "../types";
+import { CSSValue } from "../type";
 import { _Var } from "../var";
 
 class g {

@@ -1,6 +1,6 @@
 import { isArr, obj, oItems, oKeys, oAss, Mapper, isDefined } from "./@";
 import { At, FontFace, Cid, Keyframes } from "./css/selectors";
-import { atCSS, CSS, KFCSS } from "./types";
+import { atCSS, CSS, KFCSS } from "./type";
 import { Loader } from "./css";
 import { isDir, isFile } from "./@/bun";
 import { writeFileSync } from "node:fs";
@@ -19,7 +19,7 @@ export { med, media, Medyas } from "./media";
 export { Var } from "./var";
 export { Value } from "./css/value";
 
-export type * from "./types";
+export type * from "./type";
 
 // -------------------------
 interface saveCSS {
@@ -130,6 +130,7 @@ const parseCSS = (css: string): string => {
   return css
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\s*([{}:;,])\s*/g, "$1")
+    .replace(/\s*([>~+])\s*/g, "$1")
     .trim();
 };
 

@@ -1,6 +1,5 @@
 import { Base, CMapper } from "..";
 import {
-  $$,
   isArr,
   isClassOrId,
   isDefined,
@@ -15,7 +14,7 @@ import {
 } from "../../../@";
 import { med, media, Medyas } from "../../../media";
 import { support } from "../../../support";
-import { CSSinR, CSSValue } from "../../../types";
+import { CSSinR, CSSValue } from "../../../type";
 import { _Var } from "../../../var";
 
 const valToMedia = (val: CSSValue | media): media => {

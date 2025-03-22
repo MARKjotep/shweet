@@ -84,7 +84,7 @@ export class Loader {
       oItems(_props).forEach(([mediaSize, css]) => {
         if (!suppcs2[mediaSize]) suppcs2[mediaSize] = {};
         oItems(css).forEach(([property, selectors]) => {
-          const ct = `@supports (${sup})`;
+          const ct = `@supports(${sup})`;
           if (!suppcs2[mediaSize][ct]) suppcs2[mediaSize][ct] = {};
           const sels = selectors.join(", ");
           if (!suppcs2[mediaSize][ct][sels])
@@ -140,7 +140,7 @@ export class Loader {
             .map((mp) => mprops[mp])
             .join(" and ");
 
-          fin.add(`@media ${fmedia}\t{\n${mitm.join("\n")}\n}`);
+          fin.add(`@media${fmedia}\t{\n${mitm.join("\n")}\n}`);
         }
       }
     });
