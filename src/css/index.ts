@@ -140,7 +140,7 @@ export class Loader {
             .map((mp) => mprops[mp])
             .join(" and ");
 
-          fin.add(`@media${fmedia}\t{\n${mitm.join("\n")}\n}`);
+          fin.add(`@media ${fmedia}\t{\n${mitm.join("\n")}\n}`);
         }
       }
     });
