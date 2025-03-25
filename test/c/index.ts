@@ -71,6 +71,9 @@ c["n1"] = [
   ps.withClass(".kks")({
     bottom: 10,
   }),
+  ps.attr({ level: "C2" })({
+    color: "orange",
+  }),
 ];
 
 c.okay = {
@@ -122,4 +125,5 @@ save({
   dir: __dirname,
   mapDir: __dirname,
   mapName: "css",
+  minify: false,
 });

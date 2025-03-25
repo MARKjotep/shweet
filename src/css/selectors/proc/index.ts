@@ -113,7 +113,7 @@ export class Proc {
     if (v instanceof _Var) {
       this.saveAnim(name, v);
       props.ass(v.var, this.props(name, v.var, valToMedia(v.value)));
-    } else if (k.startsWith(":") || k.startsWith(",")) {
+    } else if (k.startsWith(":") || k.startsWith(",") || k.startsWith("[")) {
       if (k.startsWith("::before") || k.startsWith("::after")) {
         if (isArr(v)) {
           const hasContent = v.some((mp) => "content" in mp);
