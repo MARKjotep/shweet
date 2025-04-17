@@ -7,14 +7,7 @@ body {
   font-family: arial; 
   transition: all 1s ease-in-out;
 }
-.n1 {
-  --v2: 5rem; 
-  top: 0rem; 
-  animation-name: k 1s infinite; 
-  transition: all 0.25s; 
-  animation: pop 1s infinite, okay 1s infinite;
-}
-body, .xx, .n1, .hello {
+body, #acd, .xx {
   color: red;
 }
 body.go {
@@ -28,12 +21,6 @@ body.go {
   color: grey; 
   content: '';
 }
-.n1.kks {
-  bottom: 10rem;
-}
-.n1[level="C2"] {
-  color: orange;
-}
 .okay {
   color: okay;
 }
@@ -46,6 +33,7 @@ body.go {
   background: orange;
 }
 .hello {
+  background-color: #81db1a; 
   padding: 1rem;
 }
 .hello > .nice {
@@ -78,12 +66,6 @@ body.go {
 @supports(display:grid) {
   .lol {
   grid: 2rem;
-}
-}
-/* -------------- sm */
-@media (min-width: 480px)	{
-.n1 {
-  animation-name: bouncer 1s infinite;
 }
 }
 /* -------------- lg */

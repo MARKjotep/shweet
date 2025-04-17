@@ -2,7 +2,6 @@ declare const isFN: (v: any) => v is Function;
 declare const isAsync: (v: any) => v is Function;
 declare const isPromise: (v: any) => v is Function;
 declare const isNumber: (value: any) => boolean;
-declare const isDict: (val: any) => boolean;
 declare const isPlainObject: (value: any) => boolean;
 declare const isArraybuff: (val: any) => val is string | ArrayBuffer | Uint8Array<ArrayBufferLike>;
 declare const isClassOrId: (k: string) => boolean;
@@ -25,7 +24,6 @@ declare const is_isAsync: typeof isAsync;
 declare const is_isBool: typeof isBool;
 declare const is_isClassOrId: typeof isClassOrId;
 declare const is_isDefined: typeof isDefined;
-declare const is_isDict: typeof isDict;
 declare const is_isFN: typeof isFN;
 declare const is_isInt: typeof isInt;
 declare const is_isNotNull: typeof isNotNull;
@@ -40,7 +38,7 @@ declare const is_isStr: typeof isStr;
 declare const is_isUndefined: typeof isUndefined;
 declare const is_isWindow: typeof isWindow;
 declare namespace is {
-  export { is_isArr as isArr, is_isArraybuff as isArraybuff, is_isAsync as isAsync, is_isBool as isBool, is_isClassOrId as isClassOrId, is_isDefined as isDefined, is_isDict as isDict, is_isFN as isFN, is_isInt as isInt, is_isNotNull as isNotNull, is_isNotWindow as isNotWindow, is_isNull as isNull, is_isNum as isNum, is_isNumber as isNumber, is_isObj as isObj, is_isPlainObject as isPlainObject, is_isPromise as isPromise, is_isStr as isStr, is_isUndefined as isUndefined, is_isWindow as isWindow };
+  export { is_isArr as isArr, is_isArraybuff as isArraybuff, is_isAsync as isAsync, is_isBool as isBool, is_isClassOrId as isClassOrId, is_isDefined as isDefined, is_isFN as isFN, is_isInt as isInt, is_isNotNull as isNotNull, is_isNotWindow as isNotWindow, is_isNull as isNull, is_isNum as isNum, is_isNumber as isNumber, is_isObj as isObj, is_isPlainObject as isPlainObject, is_isPromise as isPromise, is_isStr as isStr, is_isUndefined as isUndefined, is_isWindow as isWindow };
 }
 
 type V = string | number | boolean;
@@ -107,9 +105,20 @@ declare class __ {
     static get is(): typeof is;
     static get return(): typeof returner;
     static sleep: (ms?: number) => Promise<unknown>;
+    static get screen(): "xs" | "sm" | "smd" | "md" | "lg" | "xl" | "xxl" | undefined;
+    bytes(bytes: number): string;
+    static format(val: any): Formatteer;
 }
 declare class returner {
-    static array(val: any): any[];
+    static arr(val: any): any[];
+    static num(val: any, iferr?: any): number;
+}
+declare class Formatteer {
+    val: any;
+    constructor(val: any);
+    get px(): string;
+    get rem(): string;
+    get pr(): string;
 }
 
 declare class _Var {

@@ -1,7 +1,7 @@
 import { Shweet, supports, ps, med, Var } from "../../src";
 import BB from "../b";
 
-const { c, d, kf, font, save } = new Shweet({
+const { c, d, i, kf, font, save } = new Shweet({
   __filename,
   Shweet: [BB],
   name: "i",
@@ -50,34 +50,12 @@ c.xx = [
 
 const v2 = Var({ V2: 5 });
 
-c["n1"] = [
-  v2,
-  {
-    top: 0,
-    color: () => "red",
-    animationName: med(["k", "1s", "infinite"], {
-      sm: ["bouncer", "1s", "infinite"],
-    }),
-
-    transition: "all 0.25s",
-    animation: med(
-      [
-        ["pop", "1s", "infinite"],
-        ["okay", "1s", "infinite"],
-      ],
-      {},
-    ),
-  },
-  ps.withClass(".kks")({
-    bottom: 10,
-  }),
-  ps.attr({ level: "C2" })({
-    color: "orange",
-  }),
-];
-
 c.okay = {
   color: "okay",
+};
+
+i.acd = {
+  color: "red",
 };
 
 c.lol = [
@@ -104,7 +82,7 @@ c.lol = [
 
 c.hello = [
   {
-    color: "red",
+    backgroundColor: "#81db1a",
     padding: 1,
   },
   ps.child(".nice")({

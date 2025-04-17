@@ -8,7 +8,6 @@ import {
   isUndefined,
   log,
 } from "../../@";
-import { media } from "../../media";
 import { CSSValue } from "../../type";
 import { _Var } from "../../var";
 

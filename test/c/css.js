@@ -1,1 +1,1 @@
-export const go="go",hello="hello",hellos="hellos",kk="kk",kkgolarge="kkgolarge",kks="kks",lol="lol",n1="n1",naks="naks",nice="nice",okay="okay",xx="xx";
+export const acd="acd",go="go",hello="hello",hellos="hellos",kk="kk",kkgolarge="kkgolarge",lol="lol",naks="naks",nice="nice",okay="okay",xx="xx";

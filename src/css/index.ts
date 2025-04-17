@@ -320,7 +320,7 @@ export class Loader {
     if (
       !(
         (this.shaker.length && prefixedName.startsWith(".")) ||
-        prefixedName.startsWith("#")
+        (this.shaker.length && prefixedName.startsWith("#"))
       ) ||
       hasClass
     ) {

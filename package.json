@@ -1,6 +1,6 @@
 {
   "name": "shweet",
-  "version": "0.0.17",
+  "version": "0.0.19",
   "description": "CSS in TS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,6 @@
 import { Base, CMapper } from "..";
 import {
+  camel,
   isArr,
   isClassOrId,
   isDefined,
@@ -31,6 +32,26 @@ const valToMedia = (val: CSSValue | media): media => {
   Clas ID KF process
   -------------------------
   */
+
+function cssStringToObject(css: string) {
+  const properties: any = {};
+  css
+    .split(";")
+    .map((rule) => rule.trim())
+    .filter((rule) => rule !== "")
+    .forEach((rule) => {
+      const [key, value] = rule.split(":").map((part) => part.trim());
+
+      const _key = camel(key);
+      if (!isNaN(Number(value)) && isFinite(Number(value))) {
+        properties[_key] = Number(value);
+      } else {
+        properties[_key] = value;
+      }
+    });
+
+  return properties;
+}
 
 const supportMedia = (css: support) => {
   css.value.forEach((v, sel) => {
@@ -133,7 +154,7 @@ export class Proc {
     }
   }
   set(name: string, css: CSSinR, data: CMapper) {
-    if (!isObj(css)) return;
+    if (!isObj(css) && !isStr(css)) return;
     // -------------------------
     // -------------------------
     const props: Mapper<string, media | support[]> = new Mapper();
@@ -152,6 +173,9 @@ export class Proc {
       css.forEach((cc) => {
         this.set(name, cc, data);
       });
+    } else if (isStr(css)) {
+      const CP = cssStringToObject(css);
+      this.set(name, CP, data);
     } else {
       oItems(css).forEach(([k, v]) => {
         return this.process(name, k, v, props, data);
