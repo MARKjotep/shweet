@@ -7,7 +7,7 @@ body {
   font-family: arial; 
   transition: all 1s ease-in-out;
 }
-body, #acd, .xx {
+body, #acd, .xx, .hello > .nice {
   color: red;
 }
 body.go {
@@ -85,6 +85,12 @@ body.go {
 @media (min-width: 1280px)	{
 .lol {
   font-size: 3rem;
+}
+}
+/* -------------- mobile */
+@media (pointer: coarse)	{
+.hello > .nice {
+  color: orange;
 }
 }
 /* -------------- dark */

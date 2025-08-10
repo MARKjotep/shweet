@@ -2,6 +2,7 @@ declare const isFN: (v: any) => v is Function;
 declare const isAsync: (v: any) => v is Function;
 declare const isPromise: (v: any) => v is Function;
 declare const isNumber: (value: any) => boolean;
+declare const isObject: (val: any) => val is Record<string, any>;
 declare const isPlainObject: (value: any) => boolean;
 declare const isArraybuff: (val: any) => val is string | ArrayBuffer | Uint8Array<ArrayBufferLike>;
 declare const isClassOrId: (k: string) => boolean;
@@ -32,13 +33,35 @@ declare const is_isNull: typeof isNull;
 declare const is_isNum: typeof isNum;
 declare const is_isNumber: typeof isNumber;
 declare const is_isObj: typeof isObj;
+declare const is_isObject: typeof isObject;
 declare const is_isPlainObject: typeof isPlainObject;
 declare const is_isPromise: typeof isPromise;
 declare const is_isStr: typeof isStr;
 declare const is_isUndefined: typeof isUndefined;
 declare const is_isWindow: typeof isWindow;
 declare namespace is {
-  export { is_isArr as isArr, is_isArraybuff as isArraybuff, is_isAsync as isAsync, is_isBool as isBool, is_isClassOrId as isClassOrId, is_isDefined as isDefined, is_isFN as isFN, is_isInt as isInt, is_isNotNull as isNotNull, is_isNotWindow as isNotWindow, is_isNull as isNull, is_isNum as isNum, is_isNumber as isNumber, is_isObj as isObj, is_isPlainObject as isPlainObject, is_isPromise as isPromise, is_isStr as isStr, is_isUndefined as isUndefined, is_isWindow as isWindow };
+  export {
+    is_isArr as isArr,
+    is_isArraybuff as isArraybuff,
+    is_isAsync as isAsync,
+    is_isBool as isBool,
+    is_isClassOrId as isClassOrId,
+    is_isDefined as isDefined,
+    is_isFN as isFN,
+    is_isInt as isInt,
+    is_isNotNull as isNotNull,
+    is_isNotWindow as isNotWindow,
+    is_isNull as isNull,
+    is_isNum as isNum,
+    is_isNumber as isNumber,
+    is_isObj as isObj,
+    is_isObject as isObject,
+    is_isPlainObject as isPlainObject,
+    is_isPromise as isPromise,
+    is_isStr as isStr,
+    is_isUndefined as isUndefined,
+    is_isWindow as isWindow,
+  };
 }
 
 type V = string | number | boolean;
@@ -68,14 +91,15 @@ declare class __ {
     static rand(min?: number, max?: number): number;
     static fill(count: number, fill?: any): any[];
     static new({ dom, id, inner, }: {
-        dom: keyof HTMLElementTagNameMap;
+        dom: keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap;
         id?: string;
         inner?: any;
     }): HTMLElement;
     static randFrom(arr: any[] | Object): any;
+    static randArray<T>(arr?: T[], length?: number, unique?: boolean): T[];
     static randomAZ: () => string;
     static makeID: (length: number) => string;
-    static class(a: obj<any>, classes: string[]): void;
+    static class(a: obj<any>, ...classes: string[]): void;
     static get O(): {
         vals: {
             <T>(o: {
@@ -110,8 +134,10 @@ declare class __ {
     static format(val: any): Formatteer;
 }
 declare class returner {
-    static arr(val: any): any[];
+    static arr<T = string>(val?: any): T[];
     static num(val: any, iferr?: any): number;
+    static str(val: any): string;
+    static arr2obj(val: any[], switched?: boolean): any;
 }
 declare class Formatteer {
     val: any;
@@ -177,6 +203,7 @@ interface mtype {
     xl?: CSSValue;
     xxl?: CSSValue;
     no_hover?: CSSValue;
+    mobile?: CSSValue;
     print?: CSSValue;
     dark?: CSSValue;
     screen?: CSSValue;
@@ -214,6 +241,7 @@ declare class Medyas<T extends Medyas<T>, Q = Record<string, any>> {
     get XL(): T;
     get XXL(): T;
     get NO_HOVER(): T;
+    get MOBILE(): T;
     get PRINT(): T;
     get SCREEN(): T;
     get DARK(): T;
@@ -732,4 +760,5 @@ declare class Shweet {
 }
 declare function fileName(path: string): string;
 
-export { type CSS, type CSSValue, type CSSinR, type KFCSS, Medyas, Shweet, Value, Var, type VarType, __, type atCSS, f, fileName, type fontFace, log, med, media, ps, supports, v };
+export { Medyas, Shweet, Value, Var, __, f, fileName, log, med, media, ps, supports, v };
+export type { CSS, CSSValue, CSSinR, KFCSS, VarType, atCSS, fontFace };

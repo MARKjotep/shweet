@@ -28,7 +28,7 @@ export class Loader {
     public shaker: string[] = [],
     public include: string[] = [],
   ) {}
-  load(exportMap?: boolean, unit: string = "rem") {
+  load(exportMap?: boolean) {
     const def = media.default;
     const mprops = media.prop as any;
     oAss(mprops, media.extra);
@@ -63,13 +63,6 @@ export class Loader {
         this.FONT(sw, fin);
       }
     }
-
-    // log.i = fin;
-    // log.i = props;
-    // log.i = supportsProps;
-    // log.i = kprops;
-    // log.i = this.CID;
-    // log.i = animCLSS;
 
     oItems(props).forEach(([mediaSize, css]) => {
       if (!cs2[mediaSize]) cs2[mediaSize] = {};

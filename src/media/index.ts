@@ -10,6 +10,7 @@ export interface mtype {
   xl?: CSSValue;
   xxl?: CSSValue;
   no_hover?: CSSValue;
+  mobile?: CSSValue;
   print?: CSSValue;
   dark?: CSSValue;
   screen?: CSSValue;
@@ -37,6 +38,7 @@ export class media {
   );
   static readonly extra: mtype = {
     no_hover: "(pointer: coarse)",
+    mobile: "(pointer: coarse)",
     print: "print",
     screen: "screen",
     dark: "(prefers-color-scheme: dark)",
@@ -171,6 +173,9 @@ export class Medyas<T extends Medyas<T>, Q = Record<string, any>> {
     return <T>NEW.call(this, "xxl");
   }
   get NO_HOVER() {
+    return <T>NEW.call(this, "no_hover");
+  }
+  get MOBILE() {
     return <T>NEW.call(this, "no_hover");
   }
   get PRINT() {

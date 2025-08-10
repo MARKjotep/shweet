@@ -1,4 +1,4 @@
-import { Shweet, supports, ps, med, Var } from "../../src";
+import { Shweet, supports, ps, med, Var, log } from "../../src";
 import BB from "../b";
 
 const { c, d, i, kf, font, save } = new Shweet({
@@ -85,8 +85,10 @@ c.hello = [
     backgroundColor: "#81db1a",
     padding: 1,
   },
+
   ps.child(".nice")({
     background: "purple",
+    color: med("red", { mobile: "orange" }),
   }),
   ps.desc(".hellos")({
     background: "orange",
