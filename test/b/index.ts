@@ -12,8 +12,10 @@ const {
   exportMap: true,
 });
 
-export default shweet;
+//
 
-save({
+cx.c = { color: "red" };
+
+export default save({
   mapDir: __dirname,
 });

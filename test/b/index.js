@@ -1,1 +1,1 @@
-export {}
+export const c="z_c";

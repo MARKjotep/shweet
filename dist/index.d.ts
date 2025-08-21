@@ -720,7 +720,7 @@ interface shweetCFG {
     __filename: string;
     name?: string;
     prefix?: string;
-    Shweet?: Shweet | Shweet[];
+    shweets?: Shweet | Shweet[];
     exportMap?: boolean;
     webkitKeyframes?: boolean;
     unit?: "rem" | "em" | "px" | "pt" | "pc";
@@ -743,7 +743,7 @@ declare class Shweet {
     font: FontFace["css"];
     shweet: this;
     save: ({}: saveCSS) => this;
-    constructor({ __filename, name, prefix, Shweet: Sheese, exportMap, webkitKeyframes, unit, }: shweetCFG);
+    constructor({ __filename, name, prefix, shweets, exportMap, webkitKeyframes, unit, }: shweetCFG);
     get imported(): string[];
 }
 declare function fileName(path: string): string;

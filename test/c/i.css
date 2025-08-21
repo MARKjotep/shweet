@@ -1,14 +1,19 @@
 /* -------------- xs ( default ) */
 body {
   background-color: var(--_dx); 
-  animation: bounce 2s infinite; 
-  color: red;
+  animation: bounce 2s infinite;
 }
 :root {
   --_dx: red;
 }
+body, .z_c {
+  color: red;
+}
 body.go {
   height: 1rem;
+}
+.f {
+  background-clip: kkk;
 }
 /* -------------- dark */
 @media (prefers-color-scheme: dark)	{

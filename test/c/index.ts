@@ -3,7 +3,7 @@ import BB from "../b";
 
 const { c, d, i, kf, font, save } = new Shweet({
   __filename,
-  Shweet: [BB],
+  shweets: [BB],
   name: "i",
 });
 
@@ -17,11 +17,14 @@ d.body = [
     animation: "bounce 2s infinite",
     color: "red",
   },
-
   ps.withClass(".go")({
     height: 1,
   }),
 ];
+
+c.f = {
+  backgroundClip: "kkk",
+};
 
 // kf.bounce = {
 //   "0%": {

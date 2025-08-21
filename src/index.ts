@@ -35,7 +35,7 @@ interface shweetCFG {
   __filename: string;
   name?: string;
   prefix?: string;
-  Shweet?: Shweet | Shweet[];
+  shweets?: Shweet | Shweet[];
   exportMap?: boolean;
   webkitKeyframes?: boolean;
   unit?: "rem" | "em" | "px" | "pt" | "pc";
@@ -63,7 +63,7 @@ export class Shweet {
     __filename,
     name,
     prefix,
-    Shweet: Sheese = [],
+    shweets = [],
     exportMap,
     webkitKeyframes,
     unit = "rem",
@@ -72,7 +72,7 @@ export class Shweet {
     this.name = name || fileName(__filename);
     this.prefix = prefix ?? "";
     this.exportMap = exportMap;
-    const imported = isArr(Sheese) ? Sheese : [Sheese];
+    const imported = isArr(shweets) ? shweets : [shweets];
 
     loader.call(this, this.prefix, imported, webkitKeyframes, exportMap, unit);
     const TH = this;

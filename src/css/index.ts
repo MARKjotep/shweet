@@ -46,8 +46,6 @@ export class Loader {
 
     for (const sw of oVals(this.shweet)) {
       if (sw instanceof Cid) {
-        if (!sw.DATA.size) continue;
-        //
         this.ClassID(sw, props, supportsProps, exportMap);
 
         sw.ANIM.forEach((an, ky) => {
