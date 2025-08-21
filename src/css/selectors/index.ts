@@ -56,6 +56,7 @@ DOM CLASS ID
 export class Cid extends Base<CSS> {
   set(target: Base, prop: string, val: CSSinR) {
     const nme = target.PRE + prop;
+
     target.PS.set(nme, val, target.DATA);
     return true;
   }

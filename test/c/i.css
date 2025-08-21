@@ -1,101 +1,18 @@
 /* -------------- xs ( default ) */
 body {
-  background: gray; 
-  animation: bounce 2s infinite;
-}
-.xx {
-  font-family: arial; 
-  transition: all 1s ease-in-out;
-}
-body, #acd, .xx, .hello > .nice {
+  background-color: var(--_dx); 
+  animation: bounce 2s infinite; 
   color: red;
+}
+:root {
+  --_dx: red;
 }
 body.go {
   height: 1rem;
 }
-.xx > .lol {
-  color: indigo; 
-  --vv: 123rem;
-}
-.xx::before {
-  color: grey; 
-  content: '';
-}
-.okay {
-  color: okay;
-}
-.lol {
-  color: red-orange; 
-  padding: 2rem; 
-  font-size: 1rem;
-}
-.lol ~ .kkgolarge, .hello .hellos {
-  background: orange;
-}
-.hello {
-  background-color: #81db1a; 
-  padding: 1rem;
-}
-.hello > .nice {
-  background: purple;
-}
-.hello + .kk {
-  font-size: 2rem;
-}
-.hello.naks {
-  clear: 123rem;
-}
-@keyframes bounce {
-  0% {
-  color: indigo;
-} 
-  to {
-  color: yellow;
-}
-}
-@supports(selector(:has(*))) {
-  body {
-  grid: 2rem; 
-  color: red;
-} 
-  .lol {
-  display: flex; 
-  grid: 0rem;
-}
-}
-@supports(display:grid) {
-  .lol {
-  grid: 2rem;
-}
-}
-/* -------------- lg */
-@media (min-width: 1024px)	{
-@supports(selector(:has(*))) {
-  body {
-  grid: 3rem;
-}
-}
-@supports(display:grid) {
-  .lol {
-  grid: 3rem;
-}
-}
-}
-/* -------------- xl */
-@media (min-width: 1280px)	{
-.lol {
-  font-size: 3rem;
-}
-}
-/* -------------- mobile */
-@media (pointer: coarse)	{
-.hello > .nice {
-  color: orange;
-}
-}
 /* -------------- dark */
 @media (prefers-color-scheme: dark)	{
-.lol {
-  font-size: 2rem;
+:root {
+  --_dx: orange;
 }
 }

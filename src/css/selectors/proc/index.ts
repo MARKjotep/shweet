@@ -133,7 +133,8 @@ export class Proc {
   ) {
     if (v instanceof _Var) {
       this.saveAnim(name, v);
-      props.ass(v.var, this.props(name, v.var, valToMedia(v.value)));
+      props.ass(k, this.props(name, v.var, valToMedia(v)));
+      // props.ass(v.var, this.props(name, v.var, valToMedia(v.value)));
     } else if (k.startsWith(":") || k.startsWith(",") || k.startsWith("[")) {
       if (k.startsWith("::before") || k.startsWith("::after")) {
         if (isArr(v)) {
@@ -182,6 +183,7 @@ export class Proc {
       });
     }
     const dt = data.init(name, new Mapper());
+
     props.forEach((v, k) => {
       if (k === "supports") {
         data

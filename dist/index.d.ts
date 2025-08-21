@@ -1,9 +1,15 @@
+type ModuleLike = {
+    [Symbol.toStringTag]: "Module";
+    default?: unknown;
+    [key: string]: unknown;
+};
 declare const isFN: (v: any) => v is Function;
 declare const isAsync: (v: any) => v is Function;
 declare const isPromise: (v: any) => v is Function;
 declare const isNumber: (value: any) => boolean;
 declare const isObject: (val: any) => val is Record<string, any>;
 declare const isPlainObject: (value: any) => boolean;
+declare const isModule: (obj: any) => obj is ModuleLike;
 declare const isArraybuff: (val: any) => val is string | ArrayBuffer | Uint8Array<ArrayBufferLike>;
 declare const isClassOrId: (k: string) => boolean;
 declare const isBool: (v: any) => v is boolean;
@@ -19,6 +25,7 @@ declare const isInt: (str: string) => boolean;
 declare const isWindow: boolean;
 declare const isNotWindow: boolean;
 
+type is_ModuleLike = ModuleLike;
 declare const is_isArr: typeof isArr;
 declare const is_isArraybuff: typeof isArraybuff;
 declare const is_isAsync: typeof isAsync;
@@ -27,6 +34,7 @@ declare const is_isClassOrId: typeof isClassOrId;
 declare const is_isDefined: typeof isDefined;
 declare const is_isFN: typeof isFN;
 declare const is_isInt: typeof isInt;
+declare const is_isModule: typeof isModule;
 declare const is_isNotNull: typeof isNotNull;
 declare const is_isNotWindow: typeof isNotWindow;
 declare const is_isNull: typeof isNull;
@@ -40,28 +48,8 @@ declare const is_isStr: typeof isStr;
 declare const is_isUndefined: typeof isUndefined;
 declare const is_isWindow: typeof isWindow;
 declare namespace is {
-  export {
-    is_isArr as isArr,
-    is_isArraybuff as isArraybuff,
-    is_isAsync as isAsync,
-    is_isBool as isBool,
-    is_isClassOrId as isClassOrId,
-    is_isDefined as isDefined,
-    is_isFN as isFN,
-    is_isInt as isInt,
-    is_isNotNull as isNotNull,
-    is_isNotWindow as isNotWindow,
-    is_isNull as isNull,
-    is_isNum as isNum,
-    is_isNumber as isNumber,
-    is_isObj as isObj,
-    is_isObject as isObject,
-    is_isPlainObject as isPlainObject,
-    is_isPromise as isPromise,
-    is_isStr as isStr,
-    is_isUndefined as isUndefined,
-    is_isWindow as isWindow,
-  };
+  export { is_isArr as isArr, is_isArraybuff as isArraybuff, is_isAsync as isAsync, is_isBool as isBool, is_isClassOrId as isClassOrId, is_isDefined as isDefined, is_isFN as isFN, is_isInt as isInt, is_isModule as isModule, is_isNotNull as isNotNull, is_isNotWindow as isNotWindow, is_isNull as isNull, is_isNum as isNum, is_isNumber as isNumber, is_isObj as isObj, is_isObject as isObject, is_isPlainObject as isPlainObject, is_isPromise as isPromise, is_isStr as isStr, is_isUndefined as isUndefined, is_isWindow as isWindow };
+  export type { is_ModuleLike as ModuleLike };
 }
 
 type V = string | number | boolean;
