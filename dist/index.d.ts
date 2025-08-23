@@ -116,6 +116,7 @@ declare class __ {
     };
     static get is(): typeof is;
     static get return(): typeof returner;
+    static isHREF(pt: string, hpt: string): boolean;
     static sleep: (ms?: number) => Promise<unknown>;
     static get screen(): "xs" | "sm" | "smd" | "md" | "lg" | "xl" | "xxl" | undefined;
     bytes(bytes: number): string;
@@ -272,6 +273,7 @@ declare class Base<T = Record<string, any>> {
     set(target: any, prop: string, val: any): boolean;
     get css(): T;
     load(css: Base): this;
+    __(f: CSS): void;
 }
 declare class FontFace extends Base<obj<fontFace>> {
     constructor(prefix?: string);
@@ -725,6 +727,9 @@ interface shweetCFG {
     webkitKeyframes?: boolean;
     unit?: "rem" | "em" | "px" | "pt" | "pc";
 }
+type __CSS = CSS & {
+    __: (a: CSS) => void;
+};
 declare class Shweet {
     [k: string]: any;
     path: string;
@@ -732,10 +737,12 @@ declare class Shweet {
     prefix: string;
     exportMap?: boolean;
     protected _imported: Set<string>;
-    d: CSS;
-    i: CSS;
-    c: CSS;
-    kf: KFCSS;
+    d: __CSS;
+    i: __CSS;
+    c: __CSS;
+    kf: KFCSS & {
+        __: (a: KFCSS) => void;
+    };
     at: {
         import: atCSS;
         charset: atCSS;
