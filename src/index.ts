@@ -41,6 +41,8 @@ interface shweetCFG {
   unit?: "rem" | "em" | "px" | "pt" | "pc";
 }
 
+type __CSS = CSS & { __: (a: CSS) => void };
+
 export class Shweet {
   [k: string]: any;
   path: string;
@@ -48,10 +50,10 @@ export class Shweet {
   prefix: string;
   exportMap?: boolean;
   protected _imported = new Set<string>();
-  declare d: CSS;
-  declare i: CSS;
-  declare c: CSS;
-  declare kf: KFCSS;
+  declare d: __CSS;
+  declare i: __CSS;
+  declare c: __CSS;
+  declare kf: KFCSS & { __: (a: KFCSS) => void };
   declare at: {
     import: atCSS;
     charset: atCSS;

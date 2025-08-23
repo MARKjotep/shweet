@@ -28,6 +28,7 @@ export class Base<T = Record<string, any>> {
   }
   get(target: Base, prop: string, receiver: any) {
     const nme = target.PRE + prop;
+
     if (target.DATA.has(nme)) {
       return nme;
     } else if (prop in target) {
@@ -45,6 +46,11 @@ export class Base<T = Record<string, any>> {
   load(css: Base) {
     this.IMPORTED.push(css);
     return this;
+  }
+  __(f: CSS) {
+    Object.entries(f).forEach(([k, v]) => {
+      this.set(this, k, v);
+    });
   }
 }
 

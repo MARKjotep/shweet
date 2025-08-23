@@ -6,7 +6,7 @@ body {
 :root {
   --_dx: red;
 }
-body, .z_c {
+body, .a, .z_c {
   color: red;
 }
 body.go {
@@ -14,6 +14,12 @@ body.go {
 }
 .f {
   background-clip: kkk;
+}
+.b {
+  color: orange;
+}
+.root {
+  background-color: green;
 }
 /* -------------- dark */
 @media (prefers-color-scheme: dark)	{

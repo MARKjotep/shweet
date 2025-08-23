@@ -26,6 +26,17 @@ c.f = {
   backgroundClip: "kkk",
 };
 
+// test
+c.__({
+  a: { color: "red" },
+  b: [
+    {
+      color: "orange",
+    },
+  ],
+  root: { backgroundColor: "green" },
+});
+
 // kf.bounce = {
 //   "0%": {
 //     color: "indigo",
