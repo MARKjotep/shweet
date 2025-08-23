@@ -1,4 +1,4 @@
-import { obj, oItems, oLen, reCamel } from "../@";
+import { log, obj, oItems, oLen, reCamel } from "../@";
 import { Value } from "../css/value";
 import { med, media } from "../media";
 import { CSSValue } from "../type";
@@ -43,4 +43,14 @@ export class _Var {
 
 export const Var = (vr: obj<CSSValue | media>, fallback?: CSSValue) => {
   return new _Var(vr, fallback);
+};
+
+export const Vars = <T extends Record<string, CSSValue | media>>(
+  vr: T,
+): { [K in keyof T]: _Var } => {
+  const out = {} as { [K in keyof T]: _Var };
+  for (const k in vr) {
+    out[k] = new _Var({ [k]: vr[k] });
+  }
+  return out;
 };

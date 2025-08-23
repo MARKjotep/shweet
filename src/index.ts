@@ -16,7 +16,7 @@ export { f } from "./@misc/f";
 export { v } from "./@misc/v";
 export { supports } from "./support";
 export { med, media, Medyas } from "./media";
-export { Var } from "./var";
+export { Var, Vars } from "./var";
 export { Value } from "./css/value";
 
 export type * from "./type";

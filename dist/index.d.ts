@@ -175,7 +175,7 @@ type CSSinR = {
     [p: string]: CSSValue | media;
 } | CSSinR[];
 type atCSS = string;
-type CSS = Record<string, CSSinR>;
+type CSS = Record<string, CSSinR | Record<string, CSSinR>>;
 type KFX = CSSinR | Medyas<any, {}>;
 type KFCSS = obj<{
     from?: KFX;
