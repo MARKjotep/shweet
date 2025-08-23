@@ -56,7 +56,7 @@ export type CSSinR =
 
 export type atCSS = string;
 
-export type CSS = Record<string, CSSinR>;
+export type CSS = Record<string, CSSinR | Record<string, CSSinR>>;
 
 type KFX = CSSinR | Medyas<any, {}>;
 

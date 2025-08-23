@@ -28,7 +28,9 @@ c.f = {
 
 // test
 c.__({
-  a: { color: "red" },
+  a: {
+    color: "red",
+  },
   b: [
     {
       color: "orange",
