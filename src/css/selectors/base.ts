@@ -4,15 +4,13 @@ import type { media } from "../../media";
 import type { support } from "../../support";
 import { Proc } from "./proc";
 
-export type CMapper = Mapped<string, Mapped<string, media | support[]>>;
-
 export class Base<T = Record<string, any>> {
   [k: string]: any;
   PS: Proc;
   PREFIX: string;
   ARR: Mapped<string, Set<string>> = new Mapped();
   CID: Mapped<string, string> = new Mapped();
-  DATA: CMapper = new Mapped();
+  DATA: Mapped<string, Mapped<string, media | support[]>> = new Mapped();
   ANIM: Mapped<string, Set<string>> = new Mapped();
   IMPORTED: Base[] = [];
   constructor(

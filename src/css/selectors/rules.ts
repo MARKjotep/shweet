@@ -4,7 +4,9 @@ import type { obj } from "../../helpers";
 import type { atCSS, CSS, CSSinR, fontFace, KFCSS } from "../../type";
 import { Property } from "../property";
 import { Value } from "../value";
-import { Base, type CMapper } from "./base";
+import { Base } from "./base";
+import type { media } from "@/media";
+import type { support } from "@/support";
 
 /*
 -------------------------
@@ -38,7 +40,7 @@ export class Keyframes extends Base<KFCSS> {
     const nme = target.PREFIX + prop;
     const VL = isArray<obj<any>>(val) ? val : [val];
 
-    const dx: CMapper = new Mapped();
+    const dx: Mapped<string, Mapped<string, media | support[]>> = new Mapped();
     VL.forEach((vv) => {
       Object.entries(vv).forEach(([key, value]) => {
         const normalizedKey = isNumeric(key) ? `${key}%` : key;

@@ -677,10 +677,9 @@ declare class Proc {
     private addPrefixToAnimation;
     private saveAnim;
     private processDeclaration;
-    set(name: string, css: CSSinR, data: CMapper): void;
+    set(name: string, css: CSSinR, data: Mapped<string, Mapped<string, media | support[]>>): void;
 }
 
-type CMapper = Mapped<string, Mapped<string, media | support[]>>;
 declare class Base<T = Record<string, any>> {
     PRE: string;
     EXPORT?: boolean | undefined;
@@ -692,7 +691,7 @@ declare class Base<T = Record<string, any>> {
     PREFIX: string;
     ARR: Mapped<string, Set<string>>;
     CID: Mapped<string, string>;
-    DATA: CMapper;
+    DATA: Mapped<string, Mapped<string, media | support[]>>;
     ANIM: Mapped<string, Set<string>>;
     IMPORTED: Base[];
     constructor(PRE?: string, prefix?: string, EXPORT?: boolean | undefined, UNIT?: string | undefined, 

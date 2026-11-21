@@ -1,8 +1,6 @@
 import { Roll, Oven } from "@ohmyqt/oven";
-import { createRequire } from "node:module";
 
 // Resolve the declaration bundler through @ohmyqt/oven, which owns it.
-const ovenRequire = createRequire(import.meta.resolve("@ohmyqt/oven"));
 
 const Ov = new Oven({
   external: ["bun"],

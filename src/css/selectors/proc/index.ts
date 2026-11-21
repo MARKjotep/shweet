@@ -1,8 +1,5 @@
-import type { Base, CMapper } from "../base";
-import {
-  isClassOrId,
-  mergeProperties,
-} from "../../../helpers";
+import type { Base } from "../base";
+import { isClassOrId, mergeProperties } from "../../../helpers";
 import {
   isArray,
   isDefined,
@@ -118,7 +115,7 @@ export class Proc {
     k: string,
     v: any,
     declarations: Mapped<string, media | support[]>,
-    data: CMapper,
+    data: Mapped<string, Mapped<string, media | support[]>>,
   ) {
     if (v instanceof _Var) {
       this.saveAnim(name, v);
@@ -148,13 +145,14 @@ export class Proc {
     } else if (isClassOrId(k)) {
       this.set(name + k, v, data);
     } else {
-      declarations.set(
-        k,
-        this.prefixAnimationValues(name, k, valToMedia(v)),
-      );
+      declarations.set(k, this.prefixAnimationValues(name, k, valToMedia(v)));
     }
   }
-  set(name: string, css: CSSinR, data: CMapper) {
+  set(
+    name: string,
+    css: CSSinR,
+    data: Mapped<string, Mapped<string, media | support[]>>,
+  ) {
     // The legacy object guard also accepted `null`; keep that path so invalid
     // CSS values fail on the same object iteration instead of being skipped.
     if (!isObject(css) && !isNull(css) && !isString(css)) return;
@@ -206,7 +204,10 @@ export class Proc {
 
     declarations.forEach((value, key) => {
       if (key === "supports" && isArray<support>(value)) {
-        data.init(name, new Mapped()).init(key, []).push(...value);
+        data
+          .init(name, new Mapped())
+          .init(key, [])
+          .push(...value);
       } else {
         entry.set(key, value);
       }
