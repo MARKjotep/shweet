@@ -23,12 +23,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MARKjotep/sweetss.git"
+    "url": "git+https://github.com/MARKjotep/shweet.git"
   },
   "bugs": {
-    "url": "https://github.com/MARKjotep/sweetss/issues"
+    "url": "https://github.com/MARKjotep/shweet/issues"
   },
-  "homepage": "https://github.com/MARKjotep/sweetss#readme",
+  "homepage": "https://github.com/MARKjotep/shweet#readme",
   "type": "module",
   "devDependencies": {
     "@ohmyqt/oven": "link:@ohmyqt/oven",
