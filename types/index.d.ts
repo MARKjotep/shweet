@@ -8,5 +8,6 @@ export { med, media, Medyas, type MedyasOptions } from "./media";
 export { Var, Vars } from "./var";
 export { Value } from "./css/value";
 export type * from "./type";
+export type { CompileDiagnostic, DiagnosticHandler, DiagnosticSeverity, } from "./core/options";
 export { Shweet, fileName } from "./core/shweet";
 export { X, XX, XY, Z } from "./core/composition";

@@ -700,6 +700,8 @@ declare class Base<T = Record<string, any>> {
     PRE: string;
     EXPORT?: boolean | undefined;
     UNIT?: string | undefined;
+    /** Source `__filename` of the instance that owns this handler. */
+    SOURCE: string;
     [k: string]: any;
     PS: Proc;
     PREFIX: string;
@@ -708,7 +710,9 @@ declare class Base<T = Record<string, any>> {
     DATA: CMapper;
     ANIM: Mapped<string, Set<string>>;
     IMPORTED: Base[];
-    constructor(PRE?: string, prefix?: string, EXPORT?: boolean | undefined, UNIT?: string | undefined);
+    constructor(PRE?: string, prefix?: string, EXPORT?: boolean | undefined, UNIT?: string | undefined, 
+    /** Source `__filename` of the instance that owns this handler. */
+    SOURCE?: string);
     get(target: Base, prop: string, receiver: any): any;
     set(target: any, prop: string, val: any): boolean;
     get css(): T;
@@ -717,13 +721,65 @@ declare class Base<T = Record<string, any>> {
 }
 
 declare class FontFace extends Base<obj<fontFace>> {
-    constructor(prefix?: string);
+    constructor(prefix?: string, source?: string);
     set(target: any, prop: string, val: fontFace): boolean;
 }
+
+declare class Shweet<T extends exmed = exmed> {
+    [k: string]: any;
+    path: string;
+    name: string | undefined;
+    prefix: string;
+    exportMap?: boolean | undefined;
+    onDiagnostic: DiagnosticHandler | undefined;
+    private mediaFeatures;
+    protected _imported: Set<string>;
+    d: __CSS;
+    i: __CSS;
+    c: __CSS;
+    kf: KFCSS & {
+        __: (a: KFCSS) => void;
+    };
+    at: {
+        import: atCSS;
+        charset: atCSS;
+    };
+    font: FontFace["css"];
+    shweet: this;
+    save: (x?: SaveOptions) => this;
+    constructor({ __filename, name, prefix, shweets, exportMap, webkitKeyframes, mediaFeature, unit, onDiagnostic, }: ShweetOptions<T>);
+    get imported(): string[];
+    med(g: mtype & T): media;
+    med(defValue: CSSValue): media;
+    med(defValue: CSSValue, g: mtype & T): media;
+}
+declare function fileName(path: string): string | undefined;
 
 type exmed = {
     [k: string]: undefined | CSSValue;
 };
+type DiagnosticSeverity = "warning" | "error";
+/**
+ * Structured, source-aware compiler diagnostic.
+ *
+ * The Proxy assignment API records no source spans, so diagnostics deliberately
+ * carry no line/column information. `sourcePath` is the `__filename` of the
+ * instance whose handler produced the diagnostic (including imported
+ * instances), and `rule`/`selector` identify the affected at-rule/keyframe
+ * step when one exists.
+ */
+interface CompileDiagnostic {
+    /** Stable identifier suitable for programmatic filtering. */
+    code: string;
+    severity: DiagnosticSeverity;
+    message: string;
+    sourcePath: string;
+    /** Affected rule, e.g. `@keyframes spin`. */
+    rule?: string;
+    /** Affected selector or keyframe step, e.g. `from`. */
+    selector?: string;
+}
+type DiagnosticHandler = (diagnostic: CompileDiagnostic) => void;
 interface SaveOptions {
     dir?: string | string[];
     mapDir?: string | string[];
@@ -743,39 +799,15 @@ interface ShweetOptions<T extends exmed> {
     webkitKeyframes?: boolean;
     unit?: "rem" | "em" | "px" | "pt" | "pc";
     mediaFeature?: T;
+    /**
+     * Optional structured diagnostic sink. When supplied it replaces the
+     * default console logging for diagnostics that were previously logged.
+     */
+    onDiagnostic?: DiagnosticHandler;
 }
 type __CSS = CSS & {
     __: (a: CSS) => void;
 };
-
-declare class Shweet<T extends exmed = exmed> {
-    [k: string]: any;
-    path: string;
-    name: string | undefined;
-    prefix: string;
-    exportMap?: boolean | undefined;
-    private mediaFeatures;
-    protected _imported: Set<string>;
-    d: __CSS;
-    i: __CSS;
-    c: __CSS;
-    kf: KFCSS & {
-        __: (a: KFCSS) => void;
-    };
-    at: {
-        import: atCSS;
-        charset: atCSS;
-    };
-    font: FontFace["css"];
-    shweet: this;
-    save: (x?: SaveOptions) => this;
-    constructor({ __filename, name, prefix, shweets, exportMap, webkitKeyframes, mediaFeature, unit, }: ShweetOptions<T>);
-    get imported(): string[];
-    med(g: mtype & T): media;
-    med(defValue: CSSValue): media;
-    med(defValue: CSSValue, g: mtype & T): media;
-}
-declare function fileName(path: string): string | undefined;
 
 declare const Z: (cx: CSS, a: Record<string, [CSSF, Record<string, CSSF>]>) => void;
 declare const X: (cx: CSS, a: Record<string, CSSF | XZ>, mc?: string) => void;
@@ -789,4 +821,4 @@ declare const XX: (a: Record<string, CSSF>) => XZ;
 declare const XY: (a: Record<string, CSSF>) => XZ;
 
 export { Medyas, Shweet, Value, Var, Vars, X, XX, XY, Z, __, f, fileName, med, media, ps, supports, v };
-export type { CSS, CSSF, CSSValue, CSSinR, KFCSS, MedyasOptions, VarType, atCSS, fontFace };
+export type { CSS, CSSF, CSSValue, CSSinR, CompileDiagnostic, DiagnosticHandler, DiagnosticSeverity, KFCSS, MedyasOptions, VarType, atCSS, fontFace };

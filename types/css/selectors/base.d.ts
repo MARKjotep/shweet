@@ -8,6 +8,8 @@ export declare class Base<T = Record<string, any>> {
     PRE: string;
     EXPORT?: boolean | undefined;
     UNIT?: string | undefined;
+    /** Source `__filename` of the instance that owns this handler. */
+    SOURCE: string;
     [k: string]: any;
     PS: Proc;
     PREFIX: string;
@@ -16,7 +18,9 @@ export declare class Base<T = Record<string, any>> {
     DATA: CMapper;
     ANIM: Mapped<string, Set<string>>;
     IMPORTED: Base[];
-    constructor(PRE?: string, prefix?: string, EXPORT?: boolean | undefined, UNIT?: string | undefined);
+    constructor(PRE?: string, prefix?: string, EXPORT?: boolean | undefined, UNIT?: string | undefined, 
+    /** Source `__filename` of the instance that owns this handler. */
+    SOURCE?: string);
     get(target: Base, prop: string, receiver: any): any;
     set(target: any, prop: string, val: any): boolean;
     get css(): T;

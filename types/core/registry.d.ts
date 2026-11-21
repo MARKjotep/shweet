@@ -11,7 +11,7 @@ interface ImportedShweet {
  * order. The order is significant because compilation walks
  * `Object.values(shweet)`.
  */
-export declare const createSelectorHandlers: (prefix: string, webkitKeyframes?: boolean, exportMap?: boolean, unit?: string) => SelectorHandlers;
+export declare const createSelectorHandlers: (prefix: string, webkitKeyframes?: boolean, exportMap?: boolean, unit?: string, source?: string) => SelectorHandlers;
 /**
  * Imports handler data from other Shweet instances without replacing the
  * receiving handler.

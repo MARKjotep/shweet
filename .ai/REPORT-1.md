@@ -1,87 +1,66 @@
-# Worker 1 — Report: record Safari session retry
+# Worker 1 Report — Restore `builder.ts` to HEAD
 
-## Status
+## Outcome
+🟢 Complete. `builder.ts` was restored byte-for-byte from the tracked `HEAD` version. No other files were touched.
 
-🟢 Complete. The browser computed-style evidence in `plan.md` now records the fresh Safari WebDriver retry and the explicit macOS capability result, and the item remains 🟡 partial with no computed styles measured. Validation passed.
+## Context
+- Repository: `/Users/Marky/Desktop/$/shweet`
+- `HEAD`: `49bea6896ace95b809e50c443ac1ec6a5c4538ae`
+- Source of truth: `git show HEAD:builder.ts`
+- Destination: `builder.ts`
 
-## Files changed
+## Action taken
+```bash
+git show HEAD:builder.ts > builder.ts
+```
 
-- `plan.md` — rewrote the P0 "browser computed styles" evidence paragraph only.
-- `.ai/REPORT-1.md` — this report.
-
-No source, test, README, configuration, dependency, workflow, or generated files were modified. `../@ohmyqt` was not touched. No commits or pushes were made.
-
-## Plan evidence update
-
-Location: `plan.md`, P0 item "browser computed styles" (the single 🟡 bullet).
-
-Added to the existing evidence:
-
-- The user stated Safari remote automation is enabled, requested another run, and reported no pending Safari permission dialog.
-- A fresh `safaridriver --port 4444` started; `GET /status` returned `{"value":{"message":"","ready":true}}`.
-- `SHWEET_WEBDRIVER_URL=http://localhost:4444 bun test/browser-cascade.ts` compiled 906 CSS bytes, then timed out after 30 seconds on `POST /session`.
-- A separate direct W3C new-session request with `browserName: "safari"` and `platformName: "macOS"` returned HTTP 500: `The session timed out while connecting to a Safari instance. The following asynchronous operation timed out: Request creation of a new automation session`.
-- An earlier attempt that day had produced the same new-session timeout; `safaridriver --diagnose` recorded that request and timeout without a more specific reason.
-- The WebDriver process was stopped after each attempt; no browser style assertions ran.
-- Gap statement now reads: "Safari must successfully create a WebDriver session for the current machine before this harness can measure styles."
-
-The item retains its 🟡 marker. No diagnosis was added beyond the observed responses, and no computed-style equivalence is claimed. Harness timeout and capabilities were not changed.
+Before the restore, `git diff -- builder.ts` contained a single formatting-only hunk: the `rollup` member of the `RollupRuntime` type had been reflowed onto one line. Restoring `HEAD` returned it to the original multi-line formatting. No logic changes were involved in either direction.
 
 ## Validation
 
-### `bun test`
-
-```text
-bun test v1.4.4 (38afee6c8)
-
- 144 pass
- 0 fail
- 667 expect() calls
-Ran 144 tests across 14 files. [227.00ms]
+### 1. Byte-for-byte checksum comparison 🟢
 ```
-
-Exit status: 0.
-
-### `bunx tsc --noEmit --incremental false`
-
-```text
-(no output)
+58077fd62540645fcb7b90d5313f0d426f57d35d2c06801e7165467afef0824a  builder.ts
+58077fd62540645fcb7b90d5313f0d426f57d35d2c06801e7165467afef0824a  -            (git show HEAD:builder.ts)
 ```
+Checksums are identical. File size: 2017 bytes.
 
-Exit status: 0.
-
-### Marker counts versus summary
-
-Command: `for m in 🟢 🟡 🔴 ⚪; do printf '%s %s\n' "$m" "$(grep -c "^- $m" plan.md)"; done`
-
-```text
-🟢 9
-🟡 1
-🔴 0
-⚪ 1
+### 2. `git diff -- builder.ts` is empty 🟢
 ```
-
-These match the unchanged summary at `plan.md:134`: "Of 11 items, 9 are complete, 1 partial, 0 open, and 1 not applicable." The progress summary itself was not edited.
-
-### Port 4444 and driver process
-
-```text
-$ lsof -nP -iTCP:4444 -sTCP:LISTEN
-(no output; exit 1)
-
-$ pgrep -fl safaridriver
-(no output; exit 1)
+git diff -- builder.ts | wc -l
+0
 ```
+`git status --porcelain -- builder.ts` produces no output, confirming the file is clean against `HEAD`.
 
-No process listens on port 4444 and no `safaridriver` process is running.
+### 3. No unrelated files changed by the restore 🟢
+Only `builder.ts` was written. All pre-existing workspace modifications were preserved and remain untouched:
 
-## Remaining external condition
+```
+ M .ai/REPORT-1.md
+ M .ai/TASK-1.md
+ M dist/index.d.ts
+ M dist/index.js
+ M plan.md
+ M types/core/options.d.ts
+ M types/core/registry.d.ts
+ M types/core/shweet.d.ts
+ M types/css/collect.d.ts
+ M types/css/compiler.d.ts
+ M types/css/selectors/base.d.ts
+ M types/css/selectors/rules.d.ts
+ M types/index.d.ts
+```
+(Note: `builder.ts` no longer appears because it now matches `HEAD`; the other entries are the same changes that existed before this task.)
 
-Nothing in the repository blocks this item. The single remaining blocker is external: **Safari must successfully create a WebDriver session on the current machine** — the harness reached `safaridriver` and compiled the stylesheet, but `POST /session` never produced a session, so no computed styles were measured. Until that session can be created, the real-browser cascade assertions cannot produce pass/fail evidence.
+## Constraints observed
+- 🟢 Used `git show HEAD:builder.ts` as the sole source of truth.
+- 🟢 No other code changes made.
+- 🟢 No build outputs regenerated; `dist/` and `types/` were not modified by this task.
+- 🟢 No commit or push performed.
 
 ## Acceptance criteria
+- 🟢 `builder.ts` byte-for-byte matches `git show HEAD:builder.ts` (SHA-256 verified).
+- 🟢 No unrelated files changed by the restore.
 
-- 🟢 Plan evidence reflects the latest retry, including the explicit `browserName: "safari"` / `platformName: "macOS"` result, and remains accurate.
-- 🟢 Marker counts match the summary: 9 🟢, 1 🟡, 0 🔴, 1 ⚪.
-- 🟢 Report states that no computed styles were measured.
-- 🟢 No harness timeout/capability change, no source/test/API changes, no commits or pushes.
+## Summary
+1/1 task items 🟢 complete, 0 🟡 partial, 0 🔴 blocked. `builder.ts` is fully restored to its original `HEAD` state.

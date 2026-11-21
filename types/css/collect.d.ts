@@ -1,5 +1,5 @@
 import { Mapped } from "../helpers";
-import type { exmed } from "../core/options";
+import type { DiagnosticHandler, exmed } from "../core/options";
 import type { Shweet } from "../core/shweet";
 /**
  * One style rule in source (selector assignment) order. `selector` is kept as
@@ -28,6 +28,10 @@ export interface CollectOptions {
     include: string[];
     exportMap?: boolean | undefined;
     cid: Mapped<string, Set<string>>;
+    /** Root source path, used only when a handler has no path of its own. */
+    sourcePath?: string | undefined;
+    /** Optional structured diagnostic sink. */
+    onDiagnostic?: DiagnosticHandler | undefined;
 }
 export interface CollectedCss {
     /** Ordered style rules per media bucket, before conservative grouping. */
