@@ -1,0 +1,90 @@
+/* -------------- xs ( default ) */
+.kit_badge {
+  display: inline-flex; 
+  align-items: center; 
+  padding: 0.25rem 0.75rem; 
+  border-radius: 999px; 
+  background-color: var(--accent); 
+  color: var(--surface); 
+  font-size: 0.875rem; 
+  animation: kit_breathe 3s ease-in-out infinite;
+}
+:root {
+  --ink: #1f2933; 
+  --surface: #ffffff; 
+  --accent: #2563eb; 
+  --radius: 0.75rem;
+}
+body {
+  margin: 0; 
+  background-color: var(--surface); 
+  color: var(--ink); 
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+#kit_shell {
+  min-height: 100vh; 
+  display: grid; 
+  grid-template-rows: auto 1fr auto;
+}
+.kit_stack {
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem;
+}
+.kit_stack > .kit_stack-item {
+  min-width: 0;
+}
+.kit_card {
+  background-color: var(--surface); 
+  border: 1px solid rgb(16 24 40 / 0.1); 
+  border-radius: var(--radius); 
+  color: var(--ink); 
+  padding: 1rem; 
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.08);
+}
+.kit_card:hover {
+  box-shadow: 0 8px 24px rgb(16 24 40 / 0.14);
+}
+.kit_card > .kit_card-title {
+  margin: 0; 
+  color: var(--accent); 
+  font-size: 1.125rem;
+}
+.kit_card > .kit_card-body {
+  line-height: 1.6;
+}
+@keyframes kit_breathe {
+  from {
+  opacity: 0.6;
+} 
+  50% {
+  opacity: 1;
+} 
+  to {
+  opacity: 0.6;
+}
+}
+/* -------------- md */
+@media (min-width: 768px)	{
+.kit_stack {
+  gap: 1.5rem;
+}
+.kit_card {
+  padding: 1.5rem;
+}
+.kit_card > .kit_card-title {
+  font-size: 1.25rem;
+}
+}
+/* -------------- dark */
+@media (prefers-color-scheme: dark)	{
+:root {
+  --accent: #60a5fa;
+}
+}
+/* -------------- standalone */
+@media (display-mode: standalone)	{
+#kit_shell {
+  min-height: 100dvh;
+}
+}

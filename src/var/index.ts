@@ -1,0 +1,55 @@
+import { type obj, reCamel } from "../helpers";
+import { Value } from "../css/value";
+import { med, media } from "../media";
+import type { CSSValue } from "../type";
+
+export class _Var {
+  k: string = "";
+  fallback?: CSSValue;
+  var: string = "";
+  value: media;
+  constructor(vr: obj<CSSValue | media> = {}, fallback?: CSSValue) {
+    if (Object.keys(vr).length) {
+      const [k, v] = Object.entries(vr)[0]!;
+      this.k = k;
+      this.var = "--" + reCamel(k);
+      this.value = v instanceof media ? v : med(v, {});
+      this.fallback = fallback;
+    } else {
+      this.value = med({});
+    }
+  }
+  __(fallback?: CSSValue): string {
+    if (fallback) {
+      this.fallback = fallback;
+    }
+    const fb = this.fallback;
+    if (fb) {
+      return `var(${this.var}, ${Value(fb)})`;
+    } else {
+      return `var(${this.var})`;
+    }
+  }
+  new(val: CSSValue, fallback?: CSSValue) {
+    return new _Var(
+      {
+        [this.k]: val instanceof media ? val : Value(val),
+      },
+      fallback,
+    );
+  }
+}
+
+export const Var = (vr: obj<CSSValue | media>, fallback?: CSSValue) => {
+  return new _Var(vr, fallback);
+};
+
+export const Vars = <T extends Record<string, CSSValue | media>>(
+  vr: T,
+): { [K in keyof T]: _Var } => {
+  const out = {} as { [K in keyof T]: _Var };
+  for (const k in vr) {
+    out[k] = new _Var({ [k]: vr[k] });
+  }
+  return out;
+};
