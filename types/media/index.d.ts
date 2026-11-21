@@ -1,4 +1,4 @@
-import { type obj } from "../helpers";
+import type { obj } from "../helpers";
 import type { CSSinR, CSSValue } from "../type";
 export interface mtype {
     xs?: CSSValue;

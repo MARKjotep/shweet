@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import type { Mapped } from "../helpers";
+import type { Mapped } from "@ohmyqt/u";
 
 /**
  * Serializes a class/id export map. Keys are sorted by their rendered entry so

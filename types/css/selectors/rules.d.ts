@@ -1,4 +1,4 @@
-import { type obj } from "../../helpers";
+import type { obj } from "../../helpers";
 import type { atCSS, CSS, CSSinR, fontFace, KFCSS } from "../../type";
 import { Base } from "./base";
 export declare class Cid extends Base<CSS> {

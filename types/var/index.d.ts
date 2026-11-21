@@ -1,4 +1,4 @@
-import { type obj } from "../helpers";
+import type { obj } from "../helpers";
 import { media } from "../media";
 import type { CSSValue } from "../type";
 export declare class _Var {

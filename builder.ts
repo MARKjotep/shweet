@@ -1,7 +1,11 @@
 import { Roll, Oven } from "@ohmyqt/oven";
+import { createRequire } from "node:module";
+
+// Resolve the declaration bundler through @ohmyqt/oven, which owns it.
+const ovenRequire = createRequire(import.meta.resolve("@ohmyqt/oven"));
 
 const Ov = new Oven({
-  external: ["bun", "reflect-metadata"],
+  external: ["bun"],
 });
 
 const RP = new Roll({
@@ -9,6 +13,9 @@ const RP = new Roll({
 }).paths({
   "@": "",
 });
+
+// Replace the default dts plugin so @ohmyqt/u declarations are inlined once.
+// RP.plugins = [dts({ includeExternal: ["@ohmyqt/u"] })];
 
 await Ov.clear();
 

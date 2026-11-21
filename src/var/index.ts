@@ -1,4 +1,5 @@
-import { type obj, reCamel } from "../helpers";
+import { reCamel } from "@ohmyqt/u";
+import type { obj } from "../helpers";
 import { Value } from "../css/value";
 import { med, media } from "../media";
 import type { CSSValue } from "../type";

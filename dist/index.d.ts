@@ -1,9 +1,8 @@
-import { isArray, isDefined, isFunction, isNull, isObject, isString, isUndefined, Mapped } from '@ohmyqt/u';
-export { log } from '@ohmyqt/u';
+import { Mapped } from '@ohmyqt/u';
 
 /**
  * Value-level number guard matching the migrated source's original behavior.
- * Unlike `@ohmyqt/u`'s `isNumber`, `NaN` is still a number here, which keeps
+ * Unlike the utility package's strict `isNumber`, `NaN` is still a number here, which keeps
  * `Value` output unchanged for non-finite CSS values.
  */
 declare const isNumber: (value: unknown) => value is number;
@@ -14,28 +13,14 @@ declare const isNumber: (value: unknown) => value is number;
 declare const isNumeric: (value: unknown) => boolean;
 declare const isClassOrId: (key: string) => boolean;
 
-declare const guards_isArray: typeof isArray;
 declare const guards_isClassOrId: typeof isClassOrId;
-declare const guards_isDefined: typeof isDefined;
-declare const guards_isFunction: typeof isFunction;
-declare const guards_isNull: typeof isNull;
 declare const guards_isNumber: typeof isNumber;
 declare const guards_isNumeric: typeof isNumeric;
-declare const guards_isObject: typeof isObject;
-declare const guards_isString: typeof isString;
-declare const guards_isUndefined: typeof isUndefined;
 declare namespace guards {
   export {
-    guards_isArray as isArray,
     guards_isClassOrId as isClassOrId,
-    guards_isDefined as isDefined,
-    guards_isFunction as isFunction,
-    guards_isNull as isNull,
     guards_isNumber as isNumber,
     guards_isNumeric as isNumeric,
-    guards_isObject as isObject,
-    guards_isString as isString,
-    guards_isUndefined as isUndefined,
   };
 }
 

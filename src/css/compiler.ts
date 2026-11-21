@@ -1,4 +1,4 @@
-import { Mapped } from "../helpers";
+import { Mapped } from "@ohmyqt/u";
 import { media } from "../media";
 import type { DiagnosticHandler, exmed } from "../core/options";
 import type { Shweet } from "../core/shweet";

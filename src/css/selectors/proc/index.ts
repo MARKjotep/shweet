@@ -1,14 +1,16 @@
 import type { Base, CMapper } from "../base";
 import {
-  isArray,
   isClassOrId,
-  isDefined,
-  isObject,
-  isNull,
-  isString,
-  Mapped,
   mergeProperties,
 } from "../../../helpers";
+import {
+  isArray,
+  isDefined,
+  isNull,
+  isObject,
+  isString,
+  Mapped,
+} from "@ohmyqt/u";
 import type { CSSinR, CSSValue } from "../../../type";
 import { media, Medyas } from "../../../media";
 import { support } from "../../../support";

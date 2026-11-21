@@ -1,4 +1,4 @@
-import { Mapped } from "../helpers";
+import { Mapped } from "@ohmyqt/u";
 import type { CSSinR } from "../type";
 export declare class support {
     value: Mapped<string, CSSinR[]>;

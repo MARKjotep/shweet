@@ -1,16 +1,6 @@
-export {
-  isArray,
-  isDefined,
-  isFunction,
-  isNull,
-  isObject,
-  isString,
-  isUndefined,
-} from "@ohmyqt/u";
-
 /**
  * Value-level number guard matching the migrated source's original behavior.
- * Unlike `@ohmyqt/u`'s `isNumber`, `NaN` is still a number here, which keeps
+ * Unlike the utility package's strict `isNumber`, `NaN` is still a number here, which keeps
  * `Value` output unchanged for non-finite CSS values.
  */
 export const isNumber = (value: unknown): value is number =>

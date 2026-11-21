@@ -1,4 +1,5 @@
-import { bind, isArray } from "../helpers";
+import { isArray } from "@ohmyqt/u";
+import { bind } from "../helpers";
 import type { FontFace } from "../css/selectors";
 import type { atCSS, CSSValue, KFCSS } from "../type";
 import { media, type mtype } from "../media";

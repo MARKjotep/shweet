@@ -1,4 +1,4 @@
-import { isArray, reCamel } from "../helpers";
+import { isArray, reCamel } from "@ohmyqt/u";
 import { Value } from "../css/value";
 import type { CSSValue } from "../type";
 

@@ -1,4 +1,5 @@
-import { isArray, isDefined, log, Mapped, type obj } from "../helpers";
+import { isArray, isDefined, log, Mapped } from "@ohmyqt/u";
+import type { obj } from "../helpers";
 import type { support } from "../support";
 import type { media } from "../media";
 import type { CSSValue } from "../type";

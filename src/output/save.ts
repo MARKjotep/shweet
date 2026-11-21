@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
-import { ensureDirectory, ensureFile, isArray, isDefined } from "../helpers";
+import { isArray, isDefined } from "@ohmyqt/u";
+import { ensureDirectory, ensureFile } from "../helpers";
 import type { exmed, SaveOptions } from "../core/options";
 import type { Shweet } from "../core/shweet";
 import { Loader } from "../css/compiler";

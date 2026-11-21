@@ -1,4 +1,4 @@
-import { Var, log, med, media, ps } from "../..";
+import { Var, med, media, ps } from "../..";
 import { Loader } from "..";
 import { expect, test, describe } from "bun:test";
 import { Cid, Base, Keyframes } from ".";

@@ -2,10 +2,10 @@ import {
   isArray,
   isDefined,
   isNull,
-  isNumber,
   isString,
   isUndefined,
-} from "../../helpers";
+} from "@ohmyqt/u";
+import { isNumber } from "../../helpers";
 import type { CSSValue } from "../../type";
 import { _Var } from "../../var";
 

@@ -1,5 +1,5 @@
 export type { CSSF } from "./type";
-export { log, __ } from "./helpers";
+export { __ } from "./helpers";
 export { ps } from "./@misc/ps";
 export { f } from "./@misc/f";
 export { v } from "./@misc/v";

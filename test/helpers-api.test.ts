@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import * as shweetApi from "../src";
 import { f, ps, Shweet } from "../src";
 import { Loader } from "../src/css";
 
@@ -6,6 +7,14 @@ const compile = (shweet: Shweet) => new Loader(shweet).load().css;
 
 const createShweet = () =>
   new Shweet({ __filename: "/virtual/helpers-api.ts", prefix: "h" });
+
+describe("utility package exports", () => {
+  test("does not re-export @ohmyqt/u helpers from the Shweet root", () => {
+    expect("log" in shweetApi).toBe(false);
+    expect("Mapped" in shweetApi).toBe(false);
+    expect("isArray" in shweetApi).toBe(false);
+  });
+});
 
 describe("ps selector helpers", () => {
   test("combinator helpers return nested keys appended to the parent", () => {

@@ -830,9 +830,11 @@ current source rather than a separate stable abstraction:
 - `Var`, `Vars` — custom-property token helpers; see
   [Variables with `Var` and `Vars`](#variables-with-var-and-vars).
 - `fileName` — derives a base file name from a path.
-- `log` — logger re-exported from the helper barrel.
 - `__` — miscellaneous utility namespace (random helpers, DOM creation, and
   formatting) from the helper barrel.
+
+Utilities from `@ohmyqt/u` are internal imports where Shweet needs them; Shweet
+does not re-export that package's helpers from its root API.
 
 ## Examples
 

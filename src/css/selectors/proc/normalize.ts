@@ -1,10 +1,5 @@
-import {
-  camel,
-  isArray,
-  isDefined,
-  isFunction,
-  type obj,
-} from "../../../helpers";
+import type { obj } from "../../../helpers";
+import { camel, isArray, isDefined, isFunction } from "@ohmyqt/u";
 import type { CSSValue } from "../../../type";
 import { med, media } from "../../../media";
 import type { support } from "../../../support";

@@ -1,4 +1,6 @@
-import { isArray, isNumeric, Mapped, type obj } from "../../helpers";
+import { isArray, Mapped } from "@ohmyqt/u";
+import { isNumeric } from "../../helpers";
+import type { obj } from "../../helpers";
 import type { atCSS, CSS, CSSinR, fontFace, KFCSS } from "../../type";
 import { Property } from "../property";
 import { Value } from "../value";

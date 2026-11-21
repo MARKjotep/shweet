@@ -1,4 +1,4 @@
-import { Mapped } from "../../helpers";
+import { Mapped } from "@ohmyqt/u";
 import type { CSS, CSSinR } from "../../type";
 import type { media } from "../../media";
 import type { support } from "../../support";

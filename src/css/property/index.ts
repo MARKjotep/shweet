@@ -1,4 +1,4 @@
-import { camel, reCamel } from "../../helpers";
+import { camel, reCamel } from "@ohmyqt/u";
 import type { CSSValue } from "../../type";
 import { Value } from "../value";
 

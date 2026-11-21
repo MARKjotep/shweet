@@ -1,4 +1,5 @@
-import { isString, Mapped } from "../helpers";
+import { isString } from "@ohmyqt/u";
+import { Mapped } from "@ohmyqt/u";
 import type { CSSinR } from "../type";
 
 export class support {

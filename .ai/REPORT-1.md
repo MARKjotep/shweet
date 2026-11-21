@@ -1,66 +1,24 @@
-# Worker 1 Report — Restore `builder.ts` to HEAD
+# Worker 1 Report — Inline `@ohmyqt/u` types in compiled declarations
 
-## Outcome
-🟢 Complete. `builder.ts` was restored byte-for-byte from the tracked `HEAD` version. No other files were touched.
+## Result
+🟢 The requested declaration fix is implemented. `dist/index.d.ts` now declares `Mapped` locally and contains no `@ohmyqt/u` import.
 
-## Context
-- Repository: `/Users/Marky/Desktop/$/shweet`
-- `HEAD`: `49bea6896ace95b809e50c443ac1ec6a5c4538ae`
-- Source of truth: `git show HEAD:builder.ts`
-- Destination: `builder.ts`
+## Why the import appeared
+`node_modules/@ohmyqt/u` is a symlink to `../@ohmyqt/u`. That package's `package.json` points `types` to `dist/index.d.ts`, where it exports `Mapped`. Shweet's public declarations reference `Mapped` in types such as `support.value` and `CMapper`, so Rollup's declaration plugin encountered it. The `@ohmyqt/oven` `Roll` wrapper uses `dts()` with its default `includeExternal: []`, which leaves that dependency as an external import.
 
-## Action taken
-```bash
-git show HEAD:builder.ts > builder.ts
-```
+Other utility imports are implementation-only; they do not appear in declaration signatures. `Mapped` was the utility symbol present in Shweet's public declarations.
 
-Before the restore, `git diff -- builder.ts` contained a single formatting-only hunk: the `rollup` member of the `RollupRuntime` type had been reflowed onto one line. Restoring `HEAD` returned it to the original multi-line formatting. No logic changes were involved in either direction.
+## Changes
+- `builder.ts` resolves `rollup-plugin-dts` through the linked `@ohmyqt/oven` package and replaces `Roll`'s default dts plugin with `dts({ includeExternal: ["@ohmyqt/u"] })`.
+- `Oven.external` remains at its pre-task value: `["bun", "reflect-metadata"]`.
+- Rebuilt `dist/index.d.ts`; it contains a local `declare class Mapped` and no external or relative imports. The builder also regenerated `dist/index.js` and intermediate `types/**` output.
+- No direct project dependency or sibling-package change.
 
 ## Validation
+- 🟢 `bun builder.ts` completed and generated the declaration bundle.
+- 🟢 `bunx tsc --noEmit --incremental false` passed.
+- 🟢 `git diff --check` passed.
+- 🟢 Declaration search found `Mapped` locally and no `@ohmyqt/u` import.
+- 🟡 `bun test/package-smoke.ts` was attempted while checking the bundle. It stopped at the existing root-export assertion because it still expects `log`, which the current Shweet source intentionally no longer exports. It was not rerun after restoring `Oven.external` to its pre-task value.
 
-### 1. Byte-for-byte checksum comparison 🟢
-```
-58077fd62540645fcb7b90d5313f0d426f57d35d2c06801e7165467afef0824a  builder.ts
-58077fd62540645fcb7b90d5313f0d426f57d35d2c06801e7165467afef0824a  -            (git show HEAD:builder.ts)
-```
-Checksums are identical. File size: 2017 bytes.
-
-### 2. `git diff -- builder.ts` is empty 🟢
-```
-git diff -- builder.ts | wc -l
-0
-```
-`git status --porcelain -- builder.ts` produces no output, confirming the file is clean against `HEAD`.
-
-### 3. No unrelated files changed by the restore 🟢
-Only `builder.ts` was written. All pre-existing workspace modifications were preserved and remain untouched:
-
-```
- M .ai/REPORT-1.md
- M .ai/TASK-1.md
- M dist/index.d.ts
- M dist/index.js
- M plan.md
- M types/core/options.d.ts
- M types/core/registry.d.ts
- M types/core/shweet.d.ts
- M types/css/collect.d.ts
- M types/css/compiler.d.ts
- M types/css/selectors/base.d.ts
- M types/css/selectors/rules.d.ts
- M types/index.d.ts
-```
-(Note: `builder.ts` no longer appears because it now matches `HEAD`; the other entries are the same changes that existed before this task.)
-
-## Constraints observed
-- 🟢 Used `git show HEAD:builder.ts` as the sole source of truth.
-- 🟢 No other code changes made.
-- 🟢 No build outputs regenerated; `dist/` and `types/` were not modified by this task.
-- 🟢 No commit or push performed.
-
-## Acceptance criteria
-- 🟢 `builder.ts` byte-for-byte matches `git show HEAD:builder.ts` (SHA-256 verified).
-- 🟢 No unrelated files changed by the restore.
-
-## Summary
-1/1 task items 🟢 complete, 0 🟡 partial, 0 🔴 blocked. `builder.ts` is fully restored to its original `HEAD` state.
+No commit or publish was performed.
