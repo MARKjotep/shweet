@@ -7,7 +7,7 @@
  * its declarations and export-map entries are merged into the composed
  * stylesheet with the `base` prefix intact.
  */
-import { Shweet, med } from "../../src";
+import { Shweet, med } from "../../dist";
 
 /**
  * Media features are resolved per compilation by the instance that saves.

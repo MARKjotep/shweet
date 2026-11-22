@@ -19,7 +19,7 @@
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { Shweet, med, ps, supports } from "../../src";
+import { Shweet, med, ps, supports } from "../../dist";
 import { base, baseMediaFeatures } from "./base";
 
 const app = new Shweet({
