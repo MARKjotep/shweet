@@ -1,108 +1,110 @@
-# Multi-Agent Development Workflow
+# OpenCode Development Workflow
 
-## Roles
+- Use only agents defined in the repository's OpenCode configuration. Do not
+  delegate work to agents from another runtime.
+- OpenCode `build` leads planning, task design, coordination, integration, and final review.
+- OpenCode `code` with DeepSeek high implements tasks; run at most 3 OpenCode workers at once.
+- Use the OpenCode `advisor` with GLM 5.3 high only for blocked architecture decisions. Other named OpenCode agents are read-only.
 
-- Codex: Lead architect, orchestrator, and reviewer.
-- OpenCode with DeepSeek: Implementation workers.
-- Maximum concurrent implementation workers: 2.
+## `.ai` organization
 
-## Delegation Commands
+- Utilize the folders in `.ai`: keep OpenCode-specific instructions in `.ai/agents/`, project plans in `.ai/plans/`, task prompts in `.ai/tasks/`, and reports in `.ai/reports/`.
+- Store worker output logs under `.ai/reports/logs/`. Put worker and integration reports, progress updates, and archived reports under `.ai/reports/`; keep `.ai` root free of files.
+- Keep `AGENTS.md` and `opencode.jsonc` at the repository root as regular files; keep OpenCode-only presets in `.ai/agents/`.
 
-### Worker 1
+## Agents and roles
 
-```bash
-opencode run --model opencode-go/deepseek-v4.1-flash --variant high "Read .ai/TASK-1.md and execute all instructions. Run validation and write results to .ai/REPORT-1.md."
+| Agent          | Model                                    | Purpose                                        |
+| -------------- | ---------------------------------------- | ---------------------------------------------- |
+| `build`        | `opencode-go/glm-5.3-flash`              | Read-only lead, orchestrator, and verifier     |
+| `code`         | `opencode-go/deepseek-v4.1-flash#high`   | Implementation, file changes, fixes, and tests |
+| `advisor`      | `opencode-go/glm-5.3#high`               | Architecture advice when blocked               |
+| `evaluate`     | `opencode-go/gpt-6-luna#max`             | Complex tradeoffs                              |
+| `explore`      | `opencode-go/mimo-v2.6-flash`            | Find relevant code                             |
+| `research`     | `opencode-go/deepseek-v4.1-flash#medium` | External documentation                         |
+| `review`       | `opencode-go/gpt-6-luna#high`            | Review substantial changes                     |
+| `sanity_check` | `opencode-go/mimo-v2.6-flash`            | Quick checks                                   |
+| `vision`       | `opencode-go/gpt-6-luna#medium`          | Visual inspection                              |
+
+`build` and specialists other than `code` are read-only. Only `code` may
+implement. Launch at most 3 OpenCode child subagents at once; the primary
+`build` agent does not count toward that limit. Keep `--model` on OpenCode run
+commands to pin the intended model.
+
+## Starting work
+
+For coordinated work, start with the OpenCode `build` agent:
+
+```sh
+opencode run --agent build --model opencode-go/glm-5.3-flash \
+  "Coordinate the requested work using the code subagent."
 ```
 
-### Worker 2
+`build` inspects and plans but cannot write task/report files or implementation.
+It gives the user a short task summary before implementation and delegates
+complete prompts to the OpenCode `code` agent. For standalone implementation,
+run the OpenCode `code` agent directly:
 
-```bash
-opencode run --model opencode-go/deepseek-v4.1-flash --variant high "Read .ai/TASK-2.md and execute all instructions. Run validation and write results to .ai/REPORT-2.md."
+```sh
+opencode run --agent code --model opencode-go/deepseek-v4.1-flash#high \
+  "Read .ai/tasks/TASK-N.md and execute all instructions. Run validation and write results to .ai/reports/REPORT-N.md."
 ```
 
-### Parallel Execution
+Capture output at `.ai/reports/logs/WORKER-N.log`. Archive completed prompts, reports, and logs in their matching category folders.
 
-When tasks are independent, launch both workers concurrently:
+## Task summaries and prompts
 
-```bash
-opencode run --model opencode-go/deepseek-v4.1-flash --variant high "Read .ai/TASK-1.md and execute all instructions. Run validation and write results to .ai/REPORT-1.md." > .ai/WORKER-1.log 2>&1 &
-PID1=$!
+Every `.ai/tasks/` task file or delegated task prompt starts with a `## Summary` containing
+**2–4 plain-language bullets**. Tell the user what kind of work is being done,
+the main files or area, and the intended result. In coordinated runs, `build`
+shows these bullets before launching workers; each `code` worker repeats them at
+the top of its report. In standalone runs, `code` shows the bullets before
+editing and repeats them in its final report.
 
-opencode run --model opencode-go/deepseek-v4.1-flash --variant high "Read .ai/TASK-2.md and execute all instructions. Run validation and write results to .ai/REPORT-2.md." > .ai/WORKER-2.log 2>&1 &
-PID2=$!
+Every delegated prompt also specifies:
 
-wait "$PID1"
-STATUS1=$?
-
-wait "$PID2"
-STATUS2=$?
-
-echo "Worker 1: $STATUS1"
-echo "Worker 2: $STATUS2"
-```
-
-## Orchestrator Responsibilities
-
-1. Understand the user's requirements.
-2. Inspect relevant code.
-3. Design the implementation.
-4. Divide implementation into independent tasks whenever possible.
-5. Assign exclusive file ownership to each worker.
-6. Write detailed instructions to `.ai/TASK-1.md` and `.ai/TASK-2.md`.
-7. Launch up to two workers concurrently.
-8. Wait for workers to finish and read their reports.
-9. Skip manual Git diff review unless necessary.
-10. Independently verify the combined implementation.
-11. Delegate corrections if needed.
-12. Report the final outcome to the user.
-
-## Task Requirements
-
-Every task must contain:
-
-- Objective.
-- Relevant files.
+- Objective and relevant files.
 - Allowed files to modify.
-- Implementation requirements.
-- Dependencies.
+- Implementation requirements and dependencies.
 - Constraints and edge cases.
-- Acceptance criteria.
-- Validation commands.
+- Acceptance criteria and validation commands.
 
-## Concurrency Rules
+## Coordination and safeguards
 
-- Run up to two implementation workers simultaneously.
-- Prefer parallel execution for independent tasks.
-- Use a single worker when tasks cannot be safely divided.
-- Execute dependent tasks sequentially.
-- Never assign overlapping file ownership.
-- Workers must not modify files outside their assigned scope.
-- Workers may read files owned by other workers but must not modify them.
-- Avoid concurrent operations that modify shared generated files, dependencies, or build artifacts.
-- Run integration validation after both workers finish.
-- Never launch a third worker while two workers are active.
+- Inspect only relevant code. Split work when scopes are independent and assign
+  exclusive file ownership. Use one worker for dependent or overlapping tasks.
+- Run up to three independent OpenCode `code` workers concurrently; never
+  launch a fourth worker or allow overlapping writes. Avoid concurrent edits
+  to shared generated files, dependencies, or build artifacts.
+- Wait for all workers, check exit statuses, and collect concise reports covering
+  changed files, validation, and unresolved issues before integration review.
+- Delegate all edits and corrections to the OpenCode `code` agent; OpenCode
+  `build` verifies read-only.
+  Limit automatic correction attempts to two per task.
+- Preserve unrelated changes. Never commit or push without user authorization.
+  Stop and report unresolved blockers.
+- Keep prompts concise but complete, reuse reports, and avoid trivial delegation
+  or repeated exploration.
 
-## General Rules
+## Plans and progress
 
-- Delegate routine coding, refactoring, testing, documentation, and bug fixes.
-- Reserve Codex reasoning for planning, coordination, and verification.
-- Do not duplicate implementation work performed by workers.
-- Clear stale task reports before starting a new delegation.
-- Check worker exit codes and reports before proceeding.
-- Never commit or push without user authorization.
-- Preserve unrelated user changes.
-- Limit automatic correction attempts to two per task.
-- Stop and report unresolved blockers.
+Use 🟢 complete, 🟡 partial/in progress, 🔴 open/blocked, and ⚪ not applicable
+for progress reports. Every implementation plan has one top-level
+`## Implementation Progress` section near the beginning and one compact table
+with columns for phase/item, deliverable, acceptance condition, and status.
+Update it as work changes; mark complete only after acceptance is verified. Keep
+open work specific, and do not repeat progress checklists elsewhere. Reports may
+include per-run validation output.
 
-## Token Optimization
+## Source organization and API docs
 
-- Keep plans concise but complete.
-- Avoid unnecessary repository exploration and repeated analysis.
-- Provide each worker only the context relevant to its task.
-- Reuse existing worker reports instead of repeating investigations.
-- Maximize parallel execution without sacrificing correctness.
-- Avoid unnecessary delegation for trivial tasks.
-
-## User Preferences
-
-- When creating plans or reporting progress, use stoplight emoji status markers for quick scanning: 🟢 complete, 🟡 partial/in progress, 🔴 open/blocked, and ⚪ not applicable. Include the markers on individual items and add a concise summary when there are multiple items.
+- Keep TypeScript source modular by responsibility. Split long files containing
+  unrelated logic or large lookup families into focused modules, using a
+  directory and small facade/barrel when useful. Compiled output may be bundled;
+  source should remain navigable.
+- Preserve public imports, keys, runtime behavior, and type inference during
+  refactors.
+- Add brief, user-oriented JSDoc to public Tally chain access and configuration
+  members so editor hover/completion explains utilities, indexed scales,
+  variants, colors, `MEDIA`, and `configure`. Put docs on emitted public types;
+  prefer concise mapped-type docs over thousands of repetitive declarations.
