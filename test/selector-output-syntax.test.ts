@@ -79,11 +79,89 @@ describe("selector prefixing syntax boundaries", () => {
   });
 });
 
+describe("parent selector lists with nested suffixes", () => {
+  test("applies pseudo suffixes to every parent selector", () => {
+    const shweet = new Shweet({
+      __filename: "/virtual/parent-list-suffix.ts",
+      prefix: "p",
+    });
+
+    shweet.d[".a, .b"] = [
+      { color: "red" },
+      ps.hover()({ color: "blue" }),
+      ps.and(".z")({ color: "black" }),
+    ];
+
+    const css = compile(shweet).css;
+
+    expect(css).toContain(".p_a:hover, .p_b:hover {");
+    expect(css).toContain(".p_a, .p_b, .p_z {");
+    // Nested lists stay inside the functional pseudo argument.
+    const nested = new Shweet({
+      __filename: "/virtual/parent-list-functional.ts",
+      prefix: "p",
+    });
+    nested.d[":is(.x, .y)"] = [
+      { color: "red" },
+      ps.hover()({ color: "blue" }),
+    ];
+    expect(compile(nested).css).toContain(":is(.p_x, .p_y):hover {");
+  });
+
+  test("does not split parent selector lists on commas inside comments", () => {
+    const shweet = new Shweet({
+      __filename: "/virtual/parent-list-comment.ts",
+      prefix: "p",
+    });
+
+    shweet.d[".a/* keep, comma */, .b"] = [
+      { color: "red" },
+      ps.hover()({ color: "blue" }),
+    ];
+
+    const css = compile(shweet).css;
+
+    expect(css).toContain(".p_a/* keep, comma */:hover, .p_b:hover {");
+  });
+
+  test("distributes combinators across parent and target lists", () => {
+    const shweet = new Shweet({
+      __filename: "/virtual/parent-list-combinator.ts",
+      prefix: "p",
+    });
+
+    shweet.d[".a, .b"] = [
+      { color: "red" },
+      ps.desc(".c, .d")({ color: "blue" }),
+      ps.child(".e")({ color: "green" }),
+    ];
+
+    const css = compile(shweet).css;
+
+    expect(css).toContain(".p_a .p_c, .p_a .p_d, .p_b .p_c, .p_b .p_d {");
+    expect(css).toContain(".p_a > .p_e, .p_b > .p_e {");
+  });
+});
+
 describe("token-aware minification", () => {
   test("keeps ordinary minified output compact", () => {
     expect(minifyCss("\n.a, .b {\n  color: red;\n}\n")).toBe(
       ".a,.b{color:red;}",
     );
+  });
+
+  test("keeps descendant whitespace before pseudo selectors", () => {
+    expect(minifyCss(".a :hover { color: red; }")).toBe(
+      ".a :hover{color:red;}",
+    );
+    expect(minifyCss(".a ::before { color: red; }")).toBe(
+      ".a ::before{color:red;}",
+    );
+    expect(minifyCss("div :is(.x, .y) { color: blue; }")).toBe(
+      "div :is(.x,.y){color:blue;}",
+    );
+    // Spaces before a declaration colon are unusual but remain valid.
+    expect(minifyCss(".a { color : red; }")).toBe(".a{color :red;}");
   });
 
   test("does not rewrite quoted strings or url payloads", () => {

@@ -40,7 +40,7 @@ const readIdentifierEnd = (css: string, start: number): number => {
 };
 
 /* Punctuation whose surrounding whitespace the previous minifier removed. */
-const COLLAPSIBLE_PUNCTUATION = new Set(["{", "}", ":", ";", ",", ">", "~"]);
+const COLLAPSIBLE_PUNCTUATION = new Set(["{", "}", ";", ",", ">", "~"]);
 
 /* Functions where whitespace around `+` and `-` is required by CSS syntax. */
 const MATH_FUNCTION = /^(?:calc|min|max|clamp|hypot|round|mod|rem|abs|sign|sqrt|pow|log|exp|sin|cos|tan|asin|acos|atan|atan2)\(/i;
@@ -83,6 +83,12 @@ const shouldDropSpace = (
     return false;
   }
   if (insideMathFunction && (next === "+" || next === "-")) return false;
+
+  // Whitespace before a colon is a descendant combinator in selectors
+  // (`.a :hover`) and harmless in declarations (`.a { color : red }`), so it
+  // must never be dropped. Whitespace after a colon is still removed.
+  if (next === ":") return false;
+  if (previous === ":") return true;
 
   if (next === "+") return true;
   if (previous === "+") return true;
@@ -291,7 +297,9 @@ export const minifyCss = (css: string): string => {
           !declarationStart,
         );
 
-        flushSpace(":");
+        // The custom property starts a declaration (after `{`/`;`) or a
+        // condition (after `(`), so preceding whitespace is never required.
+        pendingSpace = false;
         output += css.slice(index, nameEnd) + ":";
         output += css.slice(colon + 1, valueEnd);
         index = valueEnd;

@@ -55,6 +55,10 @@ export const saveShweet = <T extends exmed>(
   const mapDirectories = isArray<string>(mapDir) ? mapDir : [mapDir];
 
   for (const mapDirectory of mapDirectories) {
+    // Mirror the CSS directory handling: an omitted/empty entry (including a
+    // stray empty array element) must not resolve to the filesystem root.
+    if (!mapDirectory) continue;
+
     const mapEnd = mapDirectory.endsWith("/") ? "" : "/";
     const mapFilePath = `${mapDirectory}${mapEnd}${mapName}.js`;
 

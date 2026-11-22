@@ -31,7 +31,7 @@
     "noFallthroughCasesInSwitch": true,
     //
 
-    "typeRoots": ["node_module/@types"],
+    "typeRoots": ["node_modules/@types"],
 
     "verbatimModuleSyntax": true,
     "paths": {

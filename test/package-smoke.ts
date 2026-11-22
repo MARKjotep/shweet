@@ -369,7 +369,6 @@ const expectedExports = [
   "__",
   "f",
   "fileName",
-  "log",
   "med",
   "media",
   "ps",

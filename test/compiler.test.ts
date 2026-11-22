@@ -1,9 +1,18 @@
 import { afterAll, describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import { Mapped } from "@ohmyqt/u";
 import { Shweet, med, ps, supports } from "../src";
 import { Loader } from "../src/css";
+import { serializeExportMap } from "../src/output/export-map";
 
 const compile = (
   shweet: Shweet,
@@ -278,6 +287,79 @@ describe("css compilation", () => {
       ["a_b", new Set(["x_a_b"])],
     ]);
   });
+
+  test("does not export classes or ids inside attribute values or escapes", () => {
+    const shweet = new Shweet({
+      __filename: "/virtual/map-selector-syntax.ts",
+      prefix: "x",
+      exportMap: true,
+    });
+
+    shweet.c['attr[title=".fake, #fakeid"]'] = { color: "red" };
+    shweet.c["escaped\\.dot"] = { color: "blue" };
+
+    const loader = compile(shweet, true);
+
+    expect(loader.css).toContain('.x_attr[title=".fake, #fakeid"] {');
+    expect(loader.css).toContain(".x_escaped\\.dot {");
+    expect([...loader.CID.entries()]).toEqual([
+      ["attr", new Set(["x_attr"])],
+      // The escaped dot is part of one identifier; the key is a valid export.
+      ["escaped_dot", new Set(["x_escaped\\.dot"])],
+    ]);
+  });
+
+  test("the shaker ignores class-like text inside attribute values", () => {
+    const shweet = new Shweet({
+      __filename: "/virtual/shaker-selector-syntax.ts",
+      prefix: "x",
+    });
+
+    shweet.c['attr[title=".fake"]'] = { color: "red" };
+    shweet.c.real = { color: "blue" };
+
+    const css = new Loader(shweet, ["fake"]).load(false).css;
+
+    expect(css).not.toContain(".x_attr");
+    expect(css).not.toContain(".x_real");
+  });
+
+  test("keeps export maps parseable for non-binding names", async () => {
+    const cids = new Mapped<string, Set<string>>([
+      ["default", new Set(["x_default"])],
+      ["class", new Set(["x_class"])],
+      ["delete", new Set(["x_delete"])],
+      ["1st", new Set(["x_1st"])],
+      ["a-b", new Set(["x_a-b"])],
+      ["valid", new Set(["x_valid"])],
+      // A real exported name that generated internals must not shadow.
+      ["_x1", new Set(["x_x1"])],
+    ]);
+
+    const source = serializeExportMap(cids);
+
+    expect(source).toContain('export const valid="x_valid";');
+    expect(source).toContain('export const _x1="x_x1";');
+    expect(source).toContain('as "default"');
+    expect(source).toContain('as "class"');
+    expect(source).toContain('as "delete"');
+    expect(source).toContain('as "1st"');
+    expect(source).toContain('as "a-b"');
+    expect(source).not.toMatch(/(^|\n)const _x1=/);
+
+    const directory = temporaryDirectory("export-map-names");
+    const modulePath = join(directory, "index.mjs");
+    writeFileSync(modulePath, source);
+
+    const exported = await import(pathToFileURL(modulePath).href);
+
+    expect(Object.keys(exported).sort()).toEqual(
+      ["1st", "_x1", "a-b", "class", "default", "delete", "valid"].sort(),
+    );
+    expect(exported["default"]).toBe("x_default");
+    expect(exported["1st"]).toBe("x_1st");
+    expect(exported["a-b"]).toBe("x_a-b");
+  });
 });
 
 describe("css saving", () => {
@@ -333,6 +415,30 @@ describe("css saving", () => {
     expect(readFileSync(join(directory, "mini.css"), "utf8")).toBe(
       ".x_a,.x_b{color:red;}",
     );
+  });
+
+  test("ignores an empty map directory instead of writing at the root", () => {
+    const directory = temporaryDirectory("empty-map-dir");
+    const mapName = `empty-map-${directory.split("/").pop()}`;
+    const rootMapFile = join("/", `${mapName}.js`);
+    const shweet = createSavedShweet();
+
+    shweet.c.a = { color: "red" };
+
+    expect(() =>
+      shweet.save({
+        dir: directory,
+        mapDir: "",
+        mapName,
+        minify: false,
+      }),
+    ).not.toThrow();
+
+    expect(readFileSync(join(directory, "repeat.css"), "utf8")).toContain(
+      ".x_a {",
+    );
+    expect(existsSync(join(directory, `${mapName}.js`))).toBe(false);
+    expect(existsSync(rootMapFile)).toBe(false);
   });
 
   test("separate instances compile independently", () => {

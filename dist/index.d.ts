@@ -1,5 +1,3 @@
-import { Mapped } from '@ohmyqt/u';
-
 /**
  * Value-level number guard matching the migrated source's original behavior.
  * Unlike the utility package's strict `isNumber`, `NaN` is still a number here, which keeps
@@ -22,6 +20,62 @@ declare namespace guards {
     guards_isNumber as isNumber,
     guards_isNumeric as isNumeric,
   };
+}
+
+/**
+ * Enhanced Map data structure offering deep merging, transformation,
+ * filtering, and safe path access.
+ *
+ * @template K - Key type (default: string)
+ * @template V - Value type (default: any)
+ */
+declare class Mapped<K = string, V = any> extends Map<K, V> {
+    constructor(entries?: readonly (readonly [K, V])[] | Record<string, V> | null);
+    /**
+     * Merges a key-value Record object into this map.
+     */
+    mergeObject(obj?: Record<string, any> | null): this;
+    /**
+     * Merges another Map or Mapper instance into this map.
+     */
+    mergeMap(sourceMap: Map<K, V>): this;
+    /**
+     * Merges properties of an object directly into a target key's stored object.
+     */
+    assign<T extends Record<string, any>>(key: K, obj: T): this;
+    /**
+     * Returns true if the specified key is missing from the map.
+     */
+    lacks(key: K): boolean;
+    /**
+     * Retrieves a key's value if present; otherwise sets and returns the default fallback value.
+     */
+    init(key: K, defaultValue: V): V;
+    /**
+     * Maps entries into a new Mapper instance using a transformation function.
+     * @example const doubled = map.mapValues((val) => val * 2);
+     */
+    mapValues<R>(fn: (value: V, key: K, map: this) => R): Mapped<K, R>;
+    /**
+     * Filters entries into a new Mapper instance based on a predicate function.
+     * @example const active = map.filter((val) => val.isActive);
+     */
+    filter(predicate: (value: V, key: K, map: this) => boolean): Mapped<K, V>;
+    /**
+     * Converts the Mapper instance into a plain JavaScript Object.
+     * @example const obj = map.toObject();
+     */
+    toObject(): Record<string, V>;
+    /**
+     * Converts the Mapper to a JSON string representation.
+     */
+    toJson(): string;
+    /**
+     * Static helper: Constructs a Mapper from an array of objects grouped by a target property.
+     * Named `fromGroup` to avoid static interface collision with native `Map.groupBy`.
+     * @example const grouped = Mapper.fromGroup(users, "role");
+     */
+    static fromGroup<T extends Record<string, any>, K extends keyof T>(array: T[], key: K): Mapped<T[K], T[]>;
 }
 
 type ObjectChanges = {

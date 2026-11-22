@@ -114,6 +114,15 @@ describe("declaration string parsing", () => {
     expect(css).toContain("color: green;");
     expect(css).toContain("background: blue;");
   });
+
+  test("comma-separates kebab-case properties that require commas", () => {
+    const shweet = create();
+    shweet.c.a = { "transition-property": ["color", "background"] };
+
+    expect(compile(shweet)).toContain(
+      "transition-property: color, background;",
+    );
+  });
 });
 
 describe("animation value prefixing", () => {
@@ -177,6 +186,26 @@ describe("animation value prefixing", () => {
     expect(compile(shweet)).toContain(
       'animation-name: "p_bounce", p_slide;',
     );
+    expect(animationReferences(shweet)).toEqual(["p_bounce", "p_slide"]);
+  });
+
+  test("prefixes every entry in array animation values", () => {
+    const shweet = create("p");
+    shweet.c.a = { animation: ["bounce 1s", "slide 2s"] };
+    shweet.c.b = { animationName: ["bounce", "slide"] };
+
+    const css = compile(shweet);
+    expect(css).toContain("animation: p_bounce 1s, p_slide 2s;");
+    expect(css).toContain("animation-name: p_bounce, p_slide;");
+    expect(animationReferences(shweet)).toEqual(["p_bounce", "p_slide"]);
+  });
+
+  test("prefixes kebab-case animation-name keys", () => {
+    const shweet = create("p");
+    shweet.c.a = { "animation-name": '"bounce", slide' };
+
+    const css = compile(shweet);
+    expect(css).toContain('animation-name: "p_bounce", p_slide;');
     expect(animationReferences(shweet)).toEqual(["p_bounce", "p_slide"]);
   });
 

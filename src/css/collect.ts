@@ -214,6 +214,234 @@ const xmatch = (cssContent: string, regex: RegExp): string[] => {
   ).filter((match): match is string => match !== undefined);
 };
 
+interface SelectorNameToken {
+  /** Identifier exactly as written, including escapes. */
+  raw: string;
+  /** Identifier with simple/hex CSS escapes resolved. */
+  decoded: string;
+}
+
+const isSelectorIdentifierCharacter = (character: string): boolean =>
+  /[a-zA-Z0-9_-]/.test(character) || character.charCodeAt(0) >= 0x80;
+
+/**
+ * Reads one identifier that may contain CSS escapes. `raw` keeps the source
+ * spelling so a prefixed selector can be emitted byte-for-byte, while
+ * `decoded` gives the logical name used for export-map keys and shaker
+ * matching.
+ */
+const readSelectorNameToken = (
+  selector: string,
+  start: number,
+): { token: SelectorNameToken; end: number } => {
+  let index = start;
+  let raw = "";
+  let decoded = "";
+
+  while (index < selector.length) {
+    const character = selector[index]!;
+
+    if (character === "\\") {
+      raw += character;
+      index += 1;
+      if (index >= selector.length) break;
+
+      const escaped = selector[index]!;
+
+      if (/[0-9a-fA-F]/.test(escaped)) {
+        let hex = "";
+        while (
+          index < selector.length &&
+          hex.length < 6 &&
+          /[0-9a-fA-F]/.test(selector[index]!)
+        ) {
+          hex += selector[index]!;
+          index += 1;
+        }
+        raw += hex;
+        // A single whitespace terminator belongs to the escape, not the name.
+        if (index < selector.length && /\s/.test(selector[index]!)) {
+          raw += selector[index]!;
+          index += 1;
+        }
+
+        const codePoint = parseInt(hex, 16);
+        decoded +=
+          codePoint === 0 || codePoint > 0x10ffff
+            ? "\uFFFD"
+            : String.fromCodePoint(codePoint);
+      } else {
+        raw += escaped;
+        decoded += escaped;
+        index += 1;
+      }
+
+      continue;
+    }
+
+    if (!isSelectorIdentifierCharacter(character)) break;
+
+    raw += character;
+    decoded += character;
+    index += 1;
+  }
+
+  return { token: { raw, decoded }, end: index };
+};
+
+/**
+ * Collects class/id selector tokens outside quoted strings, comments, and
+ * attribute selectors. Escaped punctuation is part of the identifier, so
+ * `escaped\.dot` is one class rather than a class plus a `.dot` marker.
+ */
+const extractSelectorNames = (
+  selector: string,
+): { classes: SelectorNameToken[]; ids: SelectorNameToken[] } => {
+  const classes: SelectorNameToken[] = [];
+  const ids: SelectorNameToken[] = [];
+  let index = 0;
+  let quote: string | undefined;
+  let attributeDepth = 0;
+
+  while (index < selector.length) {
+    const character = selector[index]!;
+
+    if (character === "\\") {
+      index += 2;
+      continue;
+    }
+
+    if (quote !== undefined) {
+      if (character === quote) quote = undefined;
+      index += 1;
+      continue;
+    }
+
+    if (character === '"' || character === "'") {
+      quote = character;
+      index += 1;
+      continue;
+    }
+
+    if (character === "/" && selector[index + 1] === "*") {
+      const commentEnd = selector.indexOf("*/", index + 2);
+      index = commentEnd === -1 ? selector.length : commentEnd + 2;
+      continue;
+    }
+
+    if (character === "[") {
+      attributeDepth += 1;
+      index += 1;
+      continue;
+    }
+
+    if (character === "]") {
+      attributeDepth = Math.max(0, attributeDepth - 1);
+      index += 1;
+      continue;
+    }
+
+    if (
+      attributeDepth === 0 &&
+      (character === "." || character === "#") &&
+      isSelectorIdentifierStart(selector, index + 1)
+    ) {
+      const { token, end } = readSelectorNameToken(selector, index + 1);
+      (character === "." ? classes : ids).push(token);
+      index = end;
+      continue;
+    }
+
+    index += 1;
+  }
+
+  return { classes, ids };
+};
+
+/**
+ * Masks quoted strings, comments, and complete attribute selectors so the
+ * bounded tag scan cannot read attribute values as element names. Character
+ * positions are preserved to keep offset-based scanning simple.
+ */
+const maskProtectedSelectorRegions = (selector: string): string => {
+  const characters = selector.split("");
+  let index = 0;
+  let quote: string | undefined;
+  let attributeDepth = 0;
+
+  while (index < selector.length) {
+    const character = selector[index]!;
+
+    if (character === "\\") {
+      index += 2;
+      continue;
+    }
+
+    if (quote !== undefined) {
+      characters[index] = " ";
+      if (character === quote) quote = undefined;
+      index += 1;
+      continue;
+    }
+
+    if (character === '"' || character === "'") {
+      characters[index] = " ";
+      quote = character;
+      index += 1;
+      continue;
+    }
+
+    if (character === "/" && selector[index + 1] === "*") {
+      const commentEnd = selector.indexOf("*/", index + 2);
+      const end = commentEnd === -1 ? selector.length : commentEnd + 2;
+      for (let position = index; position < end; position += 1) {
+        characters[position] = " ";
+      }
+      index = end;
+      continue;
+    }
+
+    if (character === "[") {
+      attributeDepth += 1;
+      characters[index] = " ";
+      index += 1;
+      continue;
+    }
+
+    if (character === "]") {
+      attributeDepth = Math.max(0, attributeDepth - 1);
+      characters[index] = " ";
+      index += 1;
+      continue;
+    }
+
+    if (attributeDepth > 0) {
+      characters[index] = " ";
+    }
+
+    index += 1;
+  }
+
+  return characters.join("");
+};
+
+const validExportKey = /^[\p{ID_Start}_$][\p{ID_Continue}$]*$/u;
+const invalidExportKeyCharacter = /[^\p{ID_Continue}$]/gu;
+
+/**
+ * Builds a valid JavaScript export name. Hyphens become underscores as
+ * documented; escaped punctuation that is valid in CSS but not JavaScript is
+ * normalized the same way instead of producing an invalid module.
+ */
+const toExportKey = (name: string): string => {
+  let key = name.replaceAll("-", "_").replace(invalidExportKeyCharacter, "_");
+
+  if (key === "") return "_";
+  if (!validExportKey.test(key)) key = `_${key}`;
+
+  return key;
+};
+
 const getCID = (
   context: CollectContext,
   cssStr: string,
@@ -221,23 +449,32 @@ const getCID = (
   exportMap?: boolean,
   exportX: boolean = true,
 ) => {
-  const classRegex = /\.(?![0-9])([a-zA-Z0-9_-]+)(?![^{]*})/g; // Matches .className
-  const idRegex = /#(?![0-9])([a-zA-Z0-9_-]+)(?![^{]*})/g; // Matches #idName
   const tagRegex = /\b([a-zA-Z][a-zA-Z0-9]*)\b(?![^{}]*})/g; // Matches HTML tags like div, span, etc.
-  //
+  const { classes, ids } = extractSelectorNames(cssStr);
 
   const combined = [
-    ...new Set(xmatch(cssStr, classRegex)),
-    ...new Set(xmatch(cssStr, idRegex)),
+    ...new Set(classes.map((token) => token.decoded)),
+    ...new Set(ids.map((token) => token.decoded)),
   ];
+
   if (exportX && isDefined(exportMap) && exportMap) {
-    combined.forEach((className) => {
-      context.cid.init(className.replaceAll("-", "_"), new Set()).add(
-        prefix + className,
-      );
-    });
+    const register = (tokens: SelectorNameToken[]) => {
+      const seen = new Set<string>();
+
+      tokens.forEach(({ raw, decoded }) => {
+        if (seen.has(raw)) return;
+        seen.add(raw);
+        context.cid.init(toExportKey(decoded), new Set()).add(prefix + raw);
+      });
+    };
+
+    register(classes);
+    register(ids);
   }
-  combined.push(...new Set(xmatch(cssStr, tagRegex)));
+
+  combined.push(
+    ...new Set(xmatch(maskProtectedSelectorRegions(cssStr), tagRegex)),
+  );
 
   return combined.some(
     (selectorName) =>
