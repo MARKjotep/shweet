@@ -29,6 +29,13 @@ export interface CompileDiagnostic {
 export type DiagnosticHandler = (diagnostic: CompileDiagnostic) => void;
 
 export interface SaveOptions {
+  /**
+   * Directory for the compiled CSS. Pass `"parent"` to write beside the folder
+   * that contains the source module (`dirname(dirname(__filename))`); the
+   * export map then defaults to the source folder unless `mapDir` is set.
+   * Every other value is used literally, including a real folder named
+   * `"parent"`. The parent form throws at the filesystem root.
+   */
   dir?: string | string[];
   mapDir?: string | string[];
   mapName?: string;
