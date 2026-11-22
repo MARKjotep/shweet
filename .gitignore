@@ -1,8 +1,31 @@
 node_modules/
-dist/
-.env
-.env.*
-!.env.example
+test/yvee-bun/client/
+test-results/
+playwright-report/
+blob-report/
 .DS_Store
-.next/
-.vscode/
+.vscode
+bun.lockb
+types
+
+
+# AI agent runtime files
+.ai/reports/
+.ai/logs/
+.ai/cache/
+.ai/tmp/
+.ai/sessions/
+.ai/worktrees/
+
+# Temporary task delegation
+.ai/TASK.md
+.ai/REPORT.md
+
+# Local AI configuration
+.ai/*.local.*
+
+# Private AI development documentation
+.ai/
+MASTERPLAN.md
+tests/.tmp/
+data/
