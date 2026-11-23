@@ -41,7 +41,27 @@ export interface SaveOptions {
     include?: string[];
     includeAnimation?: string[];
     name?: string;
+    /**
+     * Folds the same-selector `:root` blocks emitted in one save into one block
+     * per media bucket, preserving declaration order. Defaults to `false`, which
+     * keeps the current output byte-identical.
+     */
+    mergeRoot?: boolean;
 }
+/** One explicit color-scheme value pair accepted by `Shweet.override`. */
+export interface OverrideModePair {
+    /** Value used inside the light color scheme. */
+    light?: CSSValue;
+    /** Value used inside the dark color scheme. */
+    dark?: CSSValue;
+}
+/**
+ * Replacement value for one `Shweet.override` target. A flat value applies to
+ * both color schemes; an explicit pair sets each scheme independently.
+ */
+export type OverrideValue = CSSValue | OverrideModePair;
+/** Token value replacements keyed by camel-cased custom-property name. */
+export type OverrideMap = Record<string, OverrideValue>;
 export interface ShweetOptions<T extends exmed> {
     __filename: string;
     name?: string;

@@ -25,6 +25,8 @@ export class Loader<T extends exmed = exmed> {
      * `onDiagnostic` option is used.
      */
     onDiagnostic?: DiagnosticHandler,
+    /** Fold same-selector `:root` groups per media bucket. */
+    public mergeRoot: boolean = false,
   ) {
     this.onDiagnostic = onDiagnostic ?? shweet.onDiagnostic;
   }
@@ -70,6 +72,7 @@ export class Loader<T extends exmed = exmed> {
       },
       mediaProperties,
       defaultMedia,
+      this.mergeRoot,
     );
 
     return this;

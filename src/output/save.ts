@@ -46,6 +46,7 @@ export const saveShweet = <T extends exmed>(
     shaker = [],
     include = [],
     name: savedName,
+    mergeRoot = false,
   } = options;
 
   // Only the bare string token resolves; arrays and `mapDir` entries are
@@ -68,6 +69,7 @@ export const saveShweet = <T extends exmed>(
     shaker,
     include,
     instance.onDiagnostic,
+    mergeRoot,
   ).load(exportMapEnabled, mediaFeatures);
 
   const outputDirectories = isArray<string>(dir)

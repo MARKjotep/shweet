@@ -1,5 +1,9 @@
 import type { KeyframeBlocksByMedia } from "./collect";
-import type { GroupedRulesByMedia, GroupedSupportsByMedia } from "./group";
+import type {
+  GroupedRule,
+  GroupedRulesByMedia,
+  GroupedSupportsByMedia,
+} from "./group";
 
 export interface SerializeInput {
   /** Source-ordered conservative rule groups per media bucket. */
@@ -28,6 +32,41 @@ const isAnimationOrTransitionRule = (declarations: string[]) =>
 const serializeRule = (selectors: Set<string>, declarations: string[]) =>
   toProperty(serializeSelectorList(selectors), declarations);
 
+/** True only for a group whose selector set is exactly `:root`. */
+const isRootOnlyGroup = ({ selectors }: GroupedRule) =>
+  selectors.size === 1 && selectors.has(":root");
+
+/**
+ * Folds same-selector `:root` groups within one media bucket into the first
+ * such group, concatenating declarations in source order. The cascade result is
+ * unchanged because duplicate custom properties keep their order and later
+ * declarations still win. No other selector is ever combined.
+ */
+const mergeRootGroups = (groupedRules: GroupedRule[]): GroupedRule[] => {
+  let rootGroup: GroupedRule | undefined;
+  const merged: GroupedRule[] = [];
+
+  groupedRules.forEach((group) => {
+    if (!isRootOnlyGroup(group)) {
+      merged.push(group);
+      return;
+    }
+
+    if (rootGroup) {
+      rootGroup.declarations.push(...group.declarations);
+      return;
+    }
+
+    rootGroup = {
+      selectors: new Set(group.selectors),
+      declarations: [...group.declarations],
+    };
+    merged.push(rootGroup);
+  });
+
+  return merged;
+};
+
 /**
  * Renders the collected rule groups. Order matches the previous loader:
  * at-rules first, then each media bucket with animation/transition rules moved
@@ -35,12 +74,14 @@ const serializeRule = (selectors: Set<string>, declarations: string[]) =>
  *
  * Group order inside a bucket is source order; only adjacent compatible rules
  * were merged, so moving an animation group to the front is the only remaining
- * reordering step.
+ * reordering step. When `mergeRoot` is enabled, same-selector `:root` groups are
+ * folded into one block per bucket before serialization.
  */
 export const serializeCss = (
   input: SerializeInput,
   mediaProperties: Record<string, unknown>,
   defaultMedia: string,
+  mergeRoot: boolean = false,
 ): string => {
   const blocks = new Set<string>();
 
@@ -50,10 +91,13 @@ export const serializeCss = (
 
   Object.entries(input.groupedRulesByMedia).forEach(
     ([mediaName, groupedRules]) => {
+      const sourceRules = mergeRoot
+        ? mergeRootGroups(groupedRules)
+        : groupedRules;
       const rules: string[] = [];
       const animationRules: string[] = [];
 
-      groupedRules.forEach(({ selectors, declarations }) => {
+      sourceRules.forEach(({ selectors, declarations }) => {
         const rule = serializeRule(selectors, declarations);
 
         if (isAnimationOrTransitionRule(declarations)) {

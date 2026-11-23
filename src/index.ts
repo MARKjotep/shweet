@@ -19,6 +19,9 @@ export type {
   CompileDiagnostic,
   DiagnosticHandler,
   DiagnosticSeverity,
+  OverrideMap,
+  OverrideModePair,
+  OverrideValue,
 } from "./core/options";
 
 export { Shweet, fileName } from "./core/shweet";

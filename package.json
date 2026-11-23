@@ -1,6 +1,6 @@
 {
   "name": "shweet",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "TypeScript-first CSS authoring: Proxy-based class, id, and selector declarations compiled to CSS with prefixing, media/supports conditions, keyframes, export maps, and optional minification.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

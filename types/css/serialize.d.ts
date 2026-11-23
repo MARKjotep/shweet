@@ -16,6 +16,7 @@ export declare const toProperty: (sel: string, vals: string[]) => string;
  *
  * Group order inside a bucket is source order; only adjacent compatible rules
  * were merged, so moving an animation group to the front is the only remaining
- * reordering step.
+ * reordering step. When `mergeRoot` is enabled, same-selector `:root` groups are
+ * folded into one block per bucket before serialization.
  */
-export declare const serializeCss: (input: SerializeInput, mediaProperties: Record<string, unknown>, defaultMedia: string) => string;
+export declare const serializeCss: (input: SerializeInput, mediaProperties: Record<string, unknown>, defaultMedia: string, mergeRoot?: boolean) => string;

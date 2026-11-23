@@ -10,6 +10,8 @@ export declare class Loader<T extends exmed = exmed> {
     shweet: Shweet<T>;
     shaker: string[];
     include: string[];
+    /** Fold same-selector `:root` groups per media bucket. */
+    mergeRoot: boolean;
     CID: Mapped<string, Set<string>>;
     css: string;
     /** Structured diagnostic sink for this compilation. */
@@ -19,6 +21,8 @@ export declare class Loader<T extends exmed = exmed> {
      * Optional per-compilation override. When omitted, the root instance's
      * `onDiagnostic` option is used.
      */
-    onDiagnostic?: DiagnosticHandler);
+    onDiagnostic?: DiagnosticHandler, 
+    /** Fold same-selector `:root` groups per media bucket. */
+    mergeRoot?: boolean);
     load(exportMap?: boolean, mediaFeatures?: Record<string, unknown>): this;
 }

@@ -785,6 +785,13 @@ declare class Shweet<T extends exmed = exmed> {
     font: FontFace["css"];
     shweet: this;
     save: (x?: SaveOptions) => this;
+    /**
+     * Return a clone of this instance with the given custom-property (var) values
+     * overridden. Custom-property names stay stable; only values change. A flat
+     * value applies to both light and dark modes, while `{ light, dark }` sets the
+     * explicit pair.
+     */
+    override(overrides?: OverrideMap): this;
     constructor({ __filename, name, prefix, shweets, exportMap, webkitKeyframes, mediaFeature, unit, onDiagnostic, }: ShweetOptions<T>);
     get imported(): string[];
     med(g: mtype & T): media;
@@ -834,7 +841,27 @@ interface SaveOptions {
     include?: string[];
     includeAnimation?: string[];
     name?: string;
+    /**
+     * Folds the same-selector `:root` blocks emitted in one save into one block
+     * per media bucket, preserving declaration order. Defaults to `false`, which
+     * keeps the current output byte-identical.
+     */
+    mergeRoot?: boolean;
 }
+/** One explicit color-scheme value pair accepted by `Shweet.override`. */
+interface OverrideModePair {
+    /** Value used inside the light color scheme. */
+    light?: CSSValue;
+    /** Value used inside the dark color scheme. */
+    dark?: CSSValue;
+}
+/**
+ * Replacement value for one `Shweet.override` target. A flat value applies to
+ * both color schemes; an explicit pair sets each scheme independently.
+ */
+type OverrideValue = CSSValue | OverrideModePair;
+/** Token value replacements keyed by camel-cased custom-property name. */
+type OverrideMap = Record<string, OverrideValue>;
 interface ShweetOptions<T extends exmed> {
     __filename: string;
     name?: string;
@@ -866,4 +893,4 @@ declare const XX: (a: Record<string, CSSF>) => XZ;
 declare const XY: (a: Record<string, CSSF>) => XZ;
 
 export { Medyas, Shweet, Value, Var, Vars, X, XX, XY, Z, __, f, fileName, med, media, ps, supports, v };
-export type { CSS, CSSF, CSSValue, CSSinR, CompileDiagnostic, DiagnosticHandler, DiagnosticSeverity, KFCSS, MedyasOptions, VarType, atCSS, fontFace };
+export type { CSS, CSSF, CSSValue, CSSinR, CompileDiagnostic, DiagnosticHandler, DiagnosticSeverity, KFCSS, MedyasOptions, OverrideMap, OverrideModePair, OverrideValue, VarType, atCSS, fontFace };
